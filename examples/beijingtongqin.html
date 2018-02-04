@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>北京通勤图</title>
+
+    <!--jquery-->
+    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+     <script src="http://cdn.bootcss.com/randomcolor/0.4.4/randomColor.js"></script>
+
+     <link rel="stylesheet" href="lib/maptalks.css"/>
+     <script type="text/javascript" src="lib/maptalks.js"></script>
+     <script type="text/javascript" src="../build/maptalks-gmvi.js"></script>
+     
+    <script type="text/javascript" src="http://58.210.98.62:7080/release/proj4.js"></script>
+    <!--jquery 左侧的面板面板插件-->
+    <link rel="stylesheet" href="css/demo_hudeyi.css"/>
+
+
+</head>
+<body>
+    <div id="loadingdiv" class="loadingBox" style="">
+        <div class="loader-inner pacman">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+<div id="nav-bar">
+        <div class="nav-bar-logo"></div>
+        <div class="nav-bar-title">北京人口OD分析平台</div>
+</div>
+
+<div class="aside">
+        <div class="aside_title">北京通勤图</div>
+        <div id="aside_list" class="aside_list">
+        <a href="javascript:void(0);" id="zhongguancun" class="current"><b style="background:rgba(255,58,53,0.9)"></b><span>中关村</span></a>
+        <a href="javascript:void(0);" id="xierqi" class=""><b style="background:rgba(69,178,255,1)"></b><span>西二旗</span></a>
+        <a href="javascript:void(0);" id="guomao" class=""><b style="background:rgba(190,190,14,1)"></b><span>国贸</span></a>
+        <a href="javascript:void(0);" id="wangjing"><b style="background:rgba(0,240,243,0.9)"></b><span>望京</span></a>
+        </div>
+    </div> 
+<div id="container">
+    <div id="map-container"></div>
+</div>
+<script type="text/javascript" src="js/public.js"></script>
+<script type="text/javascript" src="js/beijingtongqin.js"></script>
+</body>
+</html>

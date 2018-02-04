@@ -1,0 +1,33 @@
+{
+  "name": "maptalks-gmvi",
+  "version": "0.1.0",
+  "description": "Visualization of geographic data.",
+  "main": "index.js",
+  "scripts": {
+    "test": "",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deyihu/maptalks-gmvi.git"
+  },
+  "author": "Iverson.hu",
+  "license": "ISC",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.8",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "dependencies": {
+    "@mapbox/sphericalmercator": "^1.0.5"
+  }
+}
