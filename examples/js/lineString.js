@@ -13,7 +13,7 @@ function init() {
         'content' : '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         },
         baseLayer : new maptalks.TileLayer('tile',{
-            urlTemplate: 'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+            urlTemplate: '//{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
             subdomains: ['a','b','c','d']
         })
     });

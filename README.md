@@ -3,7 +3,7 @@ Visualization of geographic data
 
 this is inspire  from  https://github.com/huiyan-fe/mapv
 
-some example
+some gallery
 
 
 ![](gallery/point.png)
@@ -68,7 +68,7 @@ some example
 
 --------------------------
 
-more examples:http://120.26.224.171/maptalks-gmvi/examples/
+more examples:https://deyihu.github.io/src/maptalks-gmvi/examples/
 
 
 <h2>API</h2>

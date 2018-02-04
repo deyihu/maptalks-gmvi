@@ -25,7 +25,7 @@ function init() {
         'content' : '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         },
         baseLayer : new maptalks.TileLayer('tile',{
-            urlTemplate: 'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+            urlTemplate: '//{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
             subdomains: ['a','b','c','d']
         })
     });
@@ -54,11 +54,11 @@ function init() {
                  for (j = 0; j < item.length; j += 2) {
                      if(!item[j]||!item[j+1])
                        continue;
-                     coordinates.push([item[j], item[j + 1]]);
+                     coordinates.push([parseFloat(item[j]), parseFloat(item[j + 1])]);
                      timeData.push({
                          geometry: {
                              type: 'Point',
-                             coordinates:mecatorToLngLat( [item[j], item[j + 1]])
+                             coordinates:mecatorToLngLat( [parseFloat(item[j]), parseFloat(item[j + 1])])
                          },
                          count: 1,
                          time: j
