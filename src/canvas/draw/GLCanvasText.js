@@ -10,9 +10,9 @@ class GLCanvasText extends BaseCanvas{
         super();
     }
 
-    draw(canvas, dataSet, options) {
+    draw(context, dataSet, options) {
         var data = dataSet.get();
-        var context=canvas.getContext("2d");
+        // var context=canvas.getContext("2d");
         context.clearRect(0,0,context.width,context.height);
         // context.fillStyle = 'white';
      

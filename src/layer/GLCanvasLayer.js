@@ -223,7 +223,15 @@ class GMVICanvasLayer extends maptalks.Layer {
     }
 
     setCanvas(canvas){
+        // console.log(this._canvas);
         this._canvas=canvas;
+    }
+
+    getContext(){
+        return this._context;
+    }
+    setContext(context){
+        this._context=context;
     }
 
 
@@ -241,6 +249,7 @@ class GMVICanvasLayer extends maptalks.Layer {
         let map=this.getMap();
         if(!map)
             throw new Error( '请现将该图层添加到地图上');
+
         const distance=100;
         let size=map.distanceToPixel(distance,distance);
         let width=size.width;
@@ -255,6 +264,7 @@ class GMVICanvasLayer extends maptalks.Layer {
             console.error(lnglat)
             throw new Error('lnglat is error');
         }
+        var devicePixelRatio=this.devicePixelRatio=maptalks.Browser.retina ? 2 : 1;
         let map=this.getMap();
         const projection = map.getProjection();
         var xyArray=[];
@@ -279,7 +289,6 @@ class GMVICanvasLayer extends maptalks.Layer {
 
 
     _drawCanvasLayer () {
-        // var self=this;
         let renderer=this.getRenderer();
         var newData=[];
         var currenttime=this.time;
@@ -291,7 +300,7 @@ class GMVICanvasLayer extends maptalks.Layer {
                 if (currenttime && item.time > (currenttime - trails) && item.time < currenttime)
                     newData.push(item);
             }
-            var context=this._canvas.getContext("2d");
+            var context=this.getContext();
             context.save();
             context.globalCompositeOperation = 'destination-out';
             context.fillStyle = 'rgba(0, 0, 0, .1)';
@@ -300,13 +309,11 @@ class GMVICanvasLayer extends maptalks.Layer {
             renderer.completeRender();
         } else {
             newData=this.data;
-            var context=this._canvas.getContext("2d");
+            var context=this.getContext();
             context.clearRect(0, 0, context.canvas.width, context.canvas.height);
         }
         var currentViewData=[];
         var geometry,coordinates,type,e,latlng,raduis,mercatormeters;
-        var timeId="经纬度转屏幕坐标时间  ";
-        console.time(timeId)
         for(var i=0;i<newData.length;i++){
             geometry=newData[i].geometry;
             type=geometry.type;
@@ -341,11 +348,12 @@ class GMVICanvasLayer extends maptalks.Layer {
                 }
             }
         }
-        // console.log(currentViewData.length)
-        // console.timeEnd(timeId)
         var dataSet=new GL.GMVI.DataSet(currentViewData);
-        if(this.options.draw!=GL.GMVI.Cluster)
-            this.canvasType.draw(this._canvas, dataSet, this.options,renderer);
+        if(this.options.draw!=GL.GMVI.Cluster){
+           if(!this.options.noRender)  this.canvasType.draw(this.getContext(),dataSet, this.options,renderer);
+           if(this.options.callback) this.options.callback(dataSet);
+        }
+           
         else{
             var geometry,coordinates,type;
             var _data=[];
@@ -367,10 +375,7 @@ class GMVICanvasLayer extends maptalks.Layer {
             var width=size.width;
             var height=size.height;
             //聚合工具对数据进行聚合
-            var timeId='数据聚合时间 '
-            // console.time(timeId)
             var clusterResult=GL.GMVI.ClusterUtil.cluster(_data,zoom,maxClusterLv,minx,miny,maxx,maxy,width,height)
-            // console.timeEnd(timeId)
             if(clusterResult) {
                 var cluster = clusterResult.cluster;
                 var discrete = clusterResult.discrete
@@ -392,7 +397,7 @@ class GMVICanvasLayer extends maptalks.Layer {
                         this.status = 'discrete'
                     }
                 }
-                this.canvasType.draw(this._canvas, clusterResult, this.options);
+                this.canvasType.draw(this.getContext(), clusterResult, this.options);
             }
         }
     }
@@ -674,57 +679,22 @@ class GMVICanvasLayerRenderer extends maptalks.renderer.CanvasRenderer{
     }
 
     draw() {
-        const map = this.getMap(),
-            layer = this.layer;
+        const layer = this.layer;
         this.prepareCanvas();
-        //     extent = map.getContainerExtent();
-        // let maskExtent = this.prepareCanvas();
-        //     displayExtent = extent;
-        // if (maskExtent) {
-        //     maskExtent = maskExtent.convertTo(c => map._pointToContainerPoint(c));
-        //     //out of layer mask
-        //     if (!maskExtent.intersects(extent)) {
-        //         this.completeRender();
-        //         return;
-        //     }
-        //     displayExtent = extent.intersection(maskExtent);
-        // }
-        let timer='timer'
-        console.time(timer)
-        if(!layer.getCanvas()) layer.setCanvas(this.canvas)
+        if(!layer.getCanvas())
+             layer.setCanvas(this.canvas);
+        if(!layer.getContext()) layer.setContext(this.context);     
         if(!layer.inited) {
             layer._init();
             layer.inited=true;
         }
-        // console.timeEnd(timer)
         layer._reset();
-        // this.completeRender();
     }
 
     drawOnInteracting() {
         // this.draw();
     }
 
-    onZoomEnd() {
-        super.onZoomEnd.apply(this, arguments);
-    }
-
-    onResize() {
-        if (this.canvas) {
-            // this._heater._width  = this.canvas.width;
-            // this._heater._height = this.canvas.height;
-        }
-        super.onResize.apply(this, arguments);
-    }
-
-    onRemove() {
-        // this.clearHeatCache();
-        delete this._heater;
-    }
-
-    clearHeatCache() {
-        // delete this._heatViews;
-    }
 }
 GMVICanvasLayer.registerRenderer('canvas',GMVICanvasLayerRenderer);
 GL.GMVI.CanvasLayer=GMVICanvasLayer;

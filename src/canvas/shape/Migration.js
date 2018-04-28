@@ -107,13 +107,12 @@ class Migration{
         var speed=that.speed;
         if (!this.started) {
             (function drawFrame() {
-                // console.log('animation')
                 that.requestAnimationId = window.requestAnimationFrame(drawFrame, canvas);
                 if (that.playAnimation) {
+                    var devicePixelRatio=maptalks.Browser.retina ? 2 : 1;
+                    // console.log(canvas);
                     canvas.width += speed;
                     canvas.width -= speed;
-                    var timer='time'
-                    console.time(timer)
                     for (var p in that.store) {
                         var shapes = that.store[p];
                         for (var i = 0, len = shapes.length; i < len; i++) {
@@ -121,7 +120,6 @@ class Migration{
                         }
                     }
                     if(that.renderer) that.renderer.completeRender();
-                    // console.timeEnd(timer)
                 }
             })();
             this.started = true;

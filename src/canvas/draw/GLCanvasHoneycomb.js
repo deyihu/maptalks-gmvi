@@ -11,8 +11,7 @@ class GLCanvasHoneycomb extends BaseCanvas{
         super();
     }
 
-    draw(canvas, dataSet, options) {
-        var context=canvas.getContext("2d");
+    draw(context, dataSet, options) {
         context.clearRect(0,0,context.width,context.height);
         context.save();
         var data = dataSet.get();

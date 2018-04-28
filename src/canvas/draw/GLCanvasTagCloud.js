@@ -10,9 +10,9 @@ class GLCanvasTagCloud extends BaseCanvas{
     }
 
 
-    draw (canvas, dataSet, options) {
+    draw (context, dataSet, options) {
         var data = dataSet.get()
-        var ctx=canvas.getContext("2d");
+        var ctx=context;
         ctx.clearRect(0,0,ctx.width,ctx.height);
         // ctx.shadowBlur = 10;
         // ctx.shadowColor = "rgba(250, 250, 55, 0.7)";

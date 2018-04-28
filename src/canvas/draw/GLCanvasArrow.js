@@ -22,9 +22,9 @@ class GLCanvasArrow extends BaseCanvas{
         super();
     }
 
-    draw(canvas, dataSet, options) {
+    draw(context, dataSet, options) {
         var data = dataSet.get();
-        var context=canvas.getContext("2d");
+        // var context=canvas.getContext("2d");
         context.clearRect(0,0,context.width,context.height);
         context.save();
         for(var i=0;i<data.length;i++){

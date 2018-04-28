@@ -117,9 +117,9 @@ class GLCanvasHeat extends BaseCanvas{
     }
 
 
-    draw(canvas, dataSet, options) {
+    draw(context, dataSet, options) {
         var strength = options.strength || 0.3;
-        var context=canvas.getContext('2d');
+        // var context=canvas.getContext('2d');
         context.clearRect(0,0,context.width,context.height);
         context.strokeStyle = 'rgba(0,0,0,' + strength + ')';
         options = options || {};
@@ -141,7 +141,7 @@ class GLCanvasHeat extends BaseCanvas{
             context.putImageData(colored, 0, 0);
             context.restore();
         }
-        return canvas;
+        // return canvas;
     }
 }
 

@@ -10,8 +10,8 @@ class GLCanvasCluster extends BaseCanvas{
         super();
     }
 
-    draw(canvas, dataSet, options) {
-        var ctx=canvas.getContext("2d");
+    draw(context, dataSet, options) {
+        var ctx=context;
         ctx.clearRect(0,0,ctx.width,ctx.height);
         ctx.save();
         if(!dataSet)

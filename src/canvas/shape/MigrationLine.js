@@ -82,8 +82,8 @@ class MigrationLine{
                 if (that.playAnimation) {
                     canvas.width += speed;
                     canvas.width -= speed;
-                    var timer='time'
-                    console.time(timer)
+                    // var timer='time'
+                    // console.time(timer)
                     for (var p in that.store) {
                         var shapes = that.store[p];
                         for (var i = 0, len = shapes.length; i < len; i++) {
