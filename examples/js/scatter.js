@@ -47,12 +47,14 @@ function  canvasTest() {
         });
 
     }
+
+    var devicePixelRatio=this.devicePixelRatio=maptalks.Browser.retina ? 2 : 1;
     var dataSet = new maptalks.GMVI.DataSet(data);
     var options = {
-        size: 35,
-        lineWidth:3,
+        size: 35*devicePixelRatio,
+        lineWidth:3*devicePixelRatio,
         speed:10,
-        font:'15px sans-serif',
+        font:15*devicePixelRatio+'px sans-serif',
         draw: 'scatter'
     }
     layer= new maptalks.GMVI.CanvasLayer('jalfjalf',dataSet,options);//.addTo(this.map);

@@ -18,7 +18,7 @@ function init() {
         })
     });
     map.on('click',function(e){
-        console.log(e)
+        // console.log(e)
     })
 
     
@@ -78,14 +78,14 @@ function  canvasTest() {
             }
         ],
 
-        size: 35,
+        size: 25,
         draw: 'effect'
     }
     layer= new maptalks.GMVI.CanvasLayer('lasjflasjf',dataSet,options);//.addTo(this.map);
     map.addLayer(layer)
     layer.on('click',function(e){
         console.log(e)
-        console.log(e.name)
+        // console.log(e.name)
         var coordinate=e.location.coordinate;
         // popup.setTitle('info')
         // popup.setContent(e.location.coordinate.toString())

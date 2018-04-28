@@ -134,15 +134,15 @@ function  canvasTest() {
         })
 
     }
-
+     var devicePixelRatio=this.devicePixelRatio=maptalks.Browser.retina ? 2 : 1;
     var dataSet = new maptalks.GMVI.DataSet(data);
     var options = {
         draw: 'migrate',
-        size:20,//散点圆的大小
-        font:'12px sans-serif',//标注字体样式
-        lineWidth:2,//线的宽度
+        size:20*devicePixelRatio,//散点圆的大小
+        font:12*devicePixelRatio+'px sans-serif',//标注字体样式
+        lineWidth:2*devicePixelRatio,//线的宽度
         speed:16,
-        arrowSize:4
+        arrowSize:4*devicePixelRatio
     }
     layer= new maptalks.GMVI.CanvasLayer('jlasdjflasjfd',dataSet,options)
     map.addLayer(layer);//.addTo(this.map);

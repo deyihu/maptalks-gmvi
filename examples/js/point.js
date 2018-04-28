@@ -20,11 +20,29 @@ function init() {
         console.log(e)
     })
     
-     canvasTest();
+   
+        
+    var point = new maptalks.Marker(
+        [120.61080763078974, 31.308724198660883],
+        {
+        properties : {
+            altitude : 0
+        }
+        }
+    );
+
+    
+
+    var layer=new maptalks.VectorLayer('vector', [ point], {
+        enableAltitude : true,        // enable altitude
+        altitudeProperty : 'altitude' // altitude property in properties, default by 'altitude'
+    });
+    map.addLayer(layer);
  
+    canvasTest();
  }
  
- 
+
  
  //热区测试
  function  canvasTest() {
@@ -82,4 +100,3 @@ function init() {
  }
  
 init();
- 

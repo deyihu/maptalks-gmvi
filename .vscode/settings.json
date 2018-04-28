@@ -1,0 +1,10 @@
+{ 
+   
+    "view-in-browser":{
+        "customBrowser":"chrome",
+        "baseUrl": "http://localhost",
+        "basePath": "C:/Users/admin/Desktop/"
+    },
+    
+  
+}

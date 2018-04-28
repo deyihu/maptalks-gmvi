@@ -135,13 +135,13 @@ function  canvasTest() {
             color:randomColor(),
         })
     }
-
+    var devicePixelRatio=this.devicePixelRatio=maptalks.Browser.retina ? 2 : 1;
     var dataSet = new maptalks.GMVI.DataSet(data);
     var options = {
         draw: 'migrateLines',
-        lineWidth:5,//线的宽度
+        lineWidth:5*devicePixelRatio,//线的宽度
         speed:10,
-        arrowSize:5
+        arrowSize:5*devicePixelRatio
     }
     layer= new maptalks.GMVI.CanvasLayer('jalfjlasdf',dataSet,options)
     map.addLayer(layer);//.addTo(this.map)

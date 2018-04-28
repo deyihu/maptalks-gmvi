@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>图层开发示例 - HelloLayer动画图层</title>
+  <style type="text/css">
+    html,body{margin:0px;height:100%;width:100%}
+    .container{width:100%;height:100%}
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks@0.39.4/dist/maptalks.css">
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks@0.39.4/dist/maptalks.min.js"></script>
+  <body>
+
+    <div id="map" class="container"></div>
+
+    <script>
+
+      var map = new maptalks.Map('map', {
+        center: [-0.113049,51.498568],
+        zoom: 14,
+        baseLayer: new maptalks.TileLayer('base', {
+          urlTemplate: 'http://www.google.cn/maps/vt?pb=!1m5!1m4!1i{z}!2i{x}!3i{y}!4i256!2m3!1e0!2sm!3i342009817!3m9!2sen-US!3sCN!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0&token=32965',
+          subdomains: ['a','b','c','d'],
+          attribution: '&copy; Google Maps'
+        })
+      });
+
+      const options = {
+        'animation' : true,
+        // 默认颜色
+        'color' : ['Red', 'Blue', 'Green', 'Yellow'],
+        // 默认字体
+        'font' : '30px san-serif'
+      };
+
+      class HelloLayer extends maptalks.Layer {
+        // 构造函数
+        constructor(id, data, options) {
+          super(id, options);
+          this.data = data;
+        }
+
+        setData(data) {
+          this.data = data;
+          return this;
+        }
+
+        getData() {
+          return this.data;
+        }
+      }
+
+      //定义默认的图层配置属性
+      HelloLayer.mergeOptions(options);
+
+
+      class HelloLayerRenderer extends maptalks.renderer.CanvasRenderer {
+         checkResources() {
+          //HelloLayer只是绘制文字, 没有外部图片, 所以返回空数组
+          return [];
+        }
+
+        draw() {
+          const colors = this.layer.options.color;
+          const now = Date.now();
+          const rndIdx = Math.round(now / 300 % colors.length),
+            color = colors[rndIdx];
+          const drawn = this._drawData(this.layer.getData(), color);
+          this._drawnData = drawn;
+          this.completeRender();
+        }
+
+        drawOnInteracting(evtParam) {
+          if (!this._drawnData || this._drawnData.length === 0) {
+            return;
+          }
+          const colors = this.layer.options.color;
+          const now = Date.now();
+          const rndIdx = Math.round(now / 300 % colors.length),
+            color = colors[rndIdx];
+          this._drawData(this._drawnData, color);
+        }
+
+        //drawOnIntearcting被略过时的回调函数
+        onSkipDrawOnInteracting() { }
+
+        //当animation为true时是动画图层, 返回true
+        needToRedraw() {
+          if (this.layer.options['animation']) {
+            return true;
+          }
+          return super.needToRedraw();
+        }
+
+        _drawData(data, color) {
+          if (!Array.isArray(data)) {
+            return;
+          }
+          const map = this.getMap();
+          //prepareCanvas是父类CanvasRenderer中的方法
+          //用于准备canvas画布
+          //如果canvas不存在时, 则创建它
+          //如果canvas已存在, 则清空画布
+          this.prepareCanvas();
+          //this.context是渲染器canvas的CanvasRenderingContext2D
+          const ctx = this.context;
+          //设置样式
+          ctx.fillStyle = color;
+          ctx.font = this.layer.options['font'];
+
+          const containerExtent = map.getContainerExtent();
+          const drawn = [];
+          console.log(this.canvas);
+          data.forEach(d => {
+            //将中心点经纬度坐标转化为containerPoint
+            //containerPoint是指相对地图容器左上角的像素坐标.
+            const point = map.coordinateToContainerPoint(new maptalks.Coordinate(d.coord));
+            //如果绘制的点不在屏幕范围内, 则不做绘制以提高性能
+            if (!containerExtent.contains(point)) {
+              return;
+            }
+            const text = d.text;
+            const len = ctx.measureText(text);
+            ctx.fillText(text, point.x - len.width / 2, point.y);
+            const width=this.canvas.width,height=this.canvas.height;
+
+            var newcanvas=document.createElement('canvas');
+            newcanvas.width=width;
+            newcanvas.height=height;
+            var newctx=newcanvas.getContext('2d');
+            // newctx.scale(1,1);
+            newctx.drawImage(this.canvas,0,0,width/2,height/2);
+            // ctx.clearRect(0,0,width,height);
+            ctx.drawImage(newcanvas,0,0,width,height);
+            drawn.push(d);
+          });
+
+          return drawn;
+        }
+      }
+
+      HelloLayer.registerRenderer('canvas', HelloLayerRenderer);
+
+      const layer = new HelloLayer('hello');
+      layer.setData([
+        {
+          'coord' : map.getCenter().toArray(),
+          'text' : 'Hello World'
+        },
+
+        {
+          'coord' : map.getCenter().add(0.01, 0.01).toArray(),
+          'text' : 'Hello World 2'
+        }
+      ]);
+      layer.addTo(map);
+
+    </script>
+  </body>
+</html>
