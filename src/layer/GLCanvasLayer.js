@@ -366,7 +366,7 @@ class GMVICanvasLayer extends maptalks.Layer {
                 var lat=parseFloat(coordinates[1]);
                 _data.push([lng,lat,1,newData[i]]);
             }
-            var map=this.getMap(), size=map.getSize (),zoom=map.getZoom(), extent=map.getExtent();
+            var map=this.getMap(), size=map.getSize (),zoom=map.getZoom(), extent=map.getExtent(),center=map.getCenter();
             var maxClusterLv=this.options.maxClusterLv||map.getMaxZoom();
             var minx=extent.xmin;
             var miny=extent.ymin;
@@ -374,31 +374,65 @@ class GMVICanvasLayer extends maptalks.Layer {
             var maxy=extent.ymax;
             var width=size.width;
             var height=size.height;
-            //聚合工具对数据进行聚合
-            var clusterResult=GL.GMVI.ClusterUtil.cluster(_data,zoom,maxClusterLv,minx,miny,maxx,maxy,width,height)
+            var crsCode=map.getSpatialReference()._projection.code;
+            // console.log(extent)
+            if(maxx<minx||maxy<miny){
+                minx=-180,maxx=180,miny=-90,maxy=90;
+            }
+            // minx=-180,maxx=180,miny=-90,maxy=90;
+            var clusterResult=GL.GMVI.SuperCluster(this.data,zoom,maxClusterLv,minx,miny,maxx,maxy,width,height,crsCode)
             if(clusterResult) {
-                var cluster = clusterResult.cluster;
-                var discrete = clusterResult.discrete
-                if (cluster) {
-                    for (var x in cluster) {
-                        var o = cluster[x];
-                        var center = o.center;
-                        var xy = this._lnglatToPixel(center);
-                        clusterResult.cluster[x].xy = xy;
-                        this.status = 'cluster'
-                    }
-                }
-                if (discrete) {
-                    for (var i = 0; i < discrete.length; i++) {
-                        var o = discrete[i];
-                        var center = o.slice(0, 2);
-                        var xy = this._lnglatToPixel(center);
-                        clusterResult.discrete[i] = clusterResult.discrete[i].concat(xy);
-                        this.status = 'discrete'
-                    }
-                }
+                var unClustersData=[];
+                var unCluster=[];
+                (clusterResult.unClusters||[]).forEach(element => {
+                    var xy=this._lnglatToPixel(element.center);
+                    element.xy=xy;
+                    element.item.xy=xy;
+                    unClustersData.push(element.item);
+                    unCluster.push(element);
+                });
+                var clusters=clusterResult.clusters||[];
+                var clusterData=[];
+                this.unClustersData=unClustersData;
+                clusters.forEach(element=>{
+                    // console.log(element.xy);
+                    var xy=this._lnglatToPixel(element.center);
+                    element.xy=xy;
+                    // console.log(element.xy);
+                    clusterData.push(element);
+                    // console.log('==========');
+                })
+                clusterResult.clusters=clusterData;
+                clusterResult.unClusters=unCluster;
+                // console.log(unClustersData);
                 this.canvasType.draw(this.getContext(), clusterResult, this.options);
             }
+
+            //聚合工具对数据进行聚合
+            // var clusterResult=GL.GMVI.ClusterUtil.cluster(_data,zoom,maxClusterLv,minx,miny,maxx,maxy,width,height)
+            // if(clusterResult) {
+            //     var cluster = clusterResult.cluster;
+            //     var discrete = clusterResult.discrete
+            //     if (cluster) {
+            //         for (var x in cluster) {
+            //             var o = cluster[x];
+            //             var center = o.center;
+            //             var xy = this._lnglatToPixel(center);
+            //             clusterResult.cluster[x].xy = xy;
+            //             this.status = 'cluster'
+            //         }
+            //     }
+            //     if (discrete) {
+            //         for (var i = 0; i < discrete.length; i++) {
+            //             var o = discrete[i];
+            //             var center = o.slice(0, 2);
+            //             var xy = this._lnglatToPixel(center);
+            //             clusterResult.discrete[i] = clusterResult.discrete[i].concat(xy);
+            //             this.status = 'discrete'
+            //         }
+            //     }
+            //     this.canvasType.draw(this.getContext(), clusterResult, this.options);
+            // }
         }
     }
 
@@ -565,6 +599,7 @@ class GMVICanvasLayer extends maptalks.Layer {
         canvas.height=this._canvas.height;
         var ctx=canvas.getContext('2d');
         var data = this.data;
+        if(this.options.draw==GL.GMVI.Cluster) data=this.unClustersData;
         for (var i = 0; i < data.length; i++) {
             if(this.canvasType instanceof CanvasMigrateLines){
                var xy=data[i].xy;

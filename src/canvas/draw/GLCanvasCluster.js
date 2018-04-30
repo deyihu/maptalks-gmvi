@@ -19,39 +19,42 @@ class GLCanvasCluster extends BaseCanvas{
         for (var key in options) {
             ctx[key] = options[key];
         }
-        var cluster=dataSet.cluster;
-        var discrete=dataSet.discrete;
-        if(cluster){
-
-            var size=options.size||25;
-            for(var i in cluster){
-                var xy=cluster[i].xy;
-                var count=cluster[i].count;
-
-                ctx.fillStyle=this.getColor(count);
+        var clusters=dataSet.clusters;
+        var unClusters=dataSet.unClusters;
+        if(clusters){
+            var self=this;
+            var size=options.size||20;
+            clusters.forEach(element => {
+                var xy=element.xy;
+                var count=element.count;
+                ctx.fillStyle=self.getOutColor(count);
+                var innerColor=self.getInnerColor(count);
+                if(count>1000) count=(count/1000).toFixed(1)+'k';
                 ctx.beginPath();
                 ctx.arc(xy[0],xy[1], size, 0, Math.PI * 2);
                 ctx.fill();
-                // ctx.lineWidth = 1;
-                // ctx.strokeStyle = options.strokeStyle||'#fff';
-                // ctx.stroke();
                 ctx.save();
+                ctx.fillStyle=innerColor;
+                ctx.beginPath();
+                ctx.arc(xy[0],xy[1], size-5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.save();
+
                 ctx.font =options.font||( 15 +'px Microsoft YaHei UI');
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-
                 ctx.fillStyle =options.fillStyle|| '#151515';
                 ctx.fillText(count, xy[0], xy[1]);
-            }
+            });
         }
 
-        if(discrete&&discrete.length>0){
-            var len=discrete.length;
+        if(unClusters&&unClusters.length>0){
+            var len=unClusters.length;
             var size=options.size||10
             for(var i=0;i<len;i++){
-                var o=discrete[i];
-                var xy=o.slice(4,6);
-                var item=o[3];
+                var o=unClusters[i];
+                var xy=o.xy;
+                var item=o.item;
                 var icon=item.icon;
                 if(icon){
                     ctx.fillStyle = 'white';
@@ -67,28 +70,35 @@ class GLCanvasCluster extends BaseCanvas{
                     ctx.strokeStyle = options.strokeStyle||'#fff';
                     ctx.stroke();
                 }
-
             }
-
         }
-
     }
 
-    getColor(count){
-        var color='rgba(110, 204, 57, 0.9)';
+    getOutColor(count){
+        var color='rgba(110, 204, 57, 0.6)';
         if(!count)
             return color;
         if(count>1000)
-            color='rgba(255,178,72,0.9)'
+            color='rgba(241, 211, 87, 0.6)'
         if(count>5000)
-            color='rgba(235,129,70,0.9)'
-        if(count>10000)
-            color='rgba(217,88,80,0.9)'
-        if(count>20000)
-            color='rgba(137,52,72,0.9)'
+            color='rgba(235,129,70,0.6)'
+        return color;
+    }
+
+    getInnerColor(count){
+        var color='rgba(110, 204, 57, 1)';
+        if(!count)
+            return color;
+        if(count>1000)
+            color='rgba(241, 211, 87, 1)'
+        if(count>5000)
+            color='rgba(235,129,70,1)'
         return color;
     }
 
 }
+
+
+
 
 export default GLCanvasCluster

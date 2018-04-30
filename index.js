@@ -8,6 +8,7 @@ import  "./src/data/GLCsv"
 import  "./src/data/GLGeoJson"
 
 import  "./src/utils/GLClusterUtil"
+import  "./src/utils/GLSuperCluster"
 import  "./src/utils/GLCityCenterUtil"
 import  "./src/utils/GLForceEdgeBundlingUtil"
 import  "./src/utils/GLCurveUtil"
