@@ -663,8 +663,8 @@ class GMVICanvasLayer extends maptalks.Layer {
         var canvasType=this.canvasType;
         if(canvasType instanceof CanvasEffect){
             if(canvasType.anmimation){
-                window.clearInterval(canvasType.anmimation)
-                canvasType.anmimation=null;
+                cancelAnimationFrame(canvasType.anmimation)
+                delete canvasType.anmimation;
                 console.log('clear effect animation')
             }
         }
