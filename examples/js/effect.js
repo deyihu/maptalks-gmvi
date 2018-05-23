@@ -30,7 +30,7 @@ function  canvasTest() {
     var data = [];
     var poiList=gsAreaPoi.data;
     var len=poiList.length;
-    console.log(len)
+    console.log('pois.length',len)
     for( var i=0;i<100;i++){
         var poiInfo=poiList[i];
         var lng=poiInfo.lng;
@@ -41,7 +41,8 @@ function  canvasTest() {
                 coordinates: [lng,lat]
             },
             count: Math.random() * 10,
-            time: Math.random() * 100
+            time: Math.random() * 100,
+            // color:'red'
         });
 
     }
@@ -79,7 +80,8 @@ function  canvasTest() {
         ],
 
         size: 25,
-        draw: 'effect'
+        draw: 'effect',
+        offset:2
     }
     layer= new maptalks.GMVI.CanvasLayer('lasjflasjf',dataSet,options);//.addTo(this.map);
     map.addLayer(layer)

@@ -16,7 +16,7 @@ function init() {
     map = new maptalks.Map("map-container",{
         // center : [175.46873, -37.90258],
         center : [114.26742553710938,30.409005247458758],
-        zoom   :  12,
+        zoom   :  10,
         pitch:30,
         maxPitch:60,
         // enableInfoWindow :false,

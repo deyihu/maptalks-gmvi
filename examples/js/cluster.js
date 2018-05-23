@@ -77,7 +77,7 @@ function  clusterTest() {
 
     var dataSet = new maptalks.GMVI.DataSet(data);
     var options = {
-        size:15,
+        size:20,
         // globalCompositeOperation: 'lighter',
         font:12+'px Microsoft YaHei UI',
         fillStyle: 'red',

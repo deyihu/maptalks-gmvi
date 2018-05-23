@@ -74,8 +74,9 @@ function  request() {
                             // console.log(cityName1,cityName2)
 
                             var cityCenter1 = maptalks.GMVI.CityCenterUtil.getCenterByCityName(item[0].replace(/市|省/, ""));
+                            // console.log(cityBegin.replace(/市|省/, "")+'-')
                             var cityCenter2 = maptalks.GMVI.CityCenterUtil.getCenterByCityName(cityBegin.replace(/市|省/, ""));
-                            if (cityCenter1) {
+                            if (cityCenter1&&cityCenter2) {
                                 // if(!cityCenter2) continue;
                                 if(Math.random() > 0.7) {
                                     curive(cityCenter2, cityCenter1, 50);

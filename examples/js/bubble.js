@@ -40,7 +40,9 @@ function  canvasTest() {
                 coordinates: [lng,lat]
             },
             count: 30 * Math.random(),
-            time: Math.random() * 100
+            time: Math.random() * 100,
+            color:randomColor(),
+            fillStyle:randomColor()
         });
 
     }

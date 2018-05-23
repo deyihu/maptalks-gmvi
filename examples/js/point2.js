@@ -46,7 +46,7 @@ function  canvasTest() {
     var options = {
         fillStyle: 'rgba(55, 50, 250, 0.6)',
         globalCompositeOperation: "lighter",
-        size: 15,
+        size: 8,
         draw: 'simple'
     }
     var canvasLayer = new maptalks.GMVI.CanvasLayer('jasldfjlasf',dataSet,options);//.addTo(this.map);

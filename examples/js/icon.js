@@ -44,7 +44,7 @@ function  canvasTest(img) {
     var overlays=[];
     for( var i=0;i<1000;i++) {
         var poiInfo = poiList[i];
-        if(data1.length<10) {
+        if(data1.length<1000) {
             data1.push({
                 geometry: {
                     type: 'Point',
