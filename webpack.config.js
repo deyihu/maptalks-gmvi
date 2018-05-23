@@ -33,7 +33,7 @@ module.exports = {
     },
     output: {
         libraryTarget: 'umd',
-        path: __dirname + '/build',
+        path: __dirname + '/dist',
         filename: PROD ? '[name].min.js' : '[name].js'
     },
     externals: {
