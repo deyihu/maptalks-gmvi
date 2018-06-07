@@ -127,7 +127,7 @@ exports.default = BaseCanvas;
 
 
 Object.defineProperty(exports, "__esModule", {
-        value: true
+    value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -139,80 +139,80 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  */
 
 var GLIntensity = function () {
-        function GLIntensity(options) {
-                _classCallCheck(this, GLIntensity);
+    function GLIntensity(options) {
+        _classCallCheck(this, GLIntensity);
 
-                options = options || {};
-                this.gradient = options.gradient || {
-                        0.25: "rgba(0, 0, 255, 1)",
-                        0.55: "rgba(0, 255, 0, 1)",
-                        0.85: "rgba(255, 255, 0, 1)",
-                        1.0: "rgba(255, 0, 0, 1)"
-                };
-                this.maxSize = options.maxSize || 35;
-                this.max = options.max || 100;
-                this.initPalette();
+        options = options || {};
+        this.gradient = options.gradient || {
+            0.25: "rgba(0, 0, 255, 1)",
+            0.55: "rgba(0, 255, 0, 1)",
+            0.85: "rgba(255, 255, 0, 1)",
+            1.0: "rgba(255, 0, 0, 1)"
+        };
+        this.maxSize = options.maxSize || 35;
+        this.max = options.max || 100;
+        this.initPalette();
+    }
+
+    _createClass(GLIntensity, [{
+        key: "initPalette",
+        value: function initPalette() {
+            var gradient = this.gradient;
+
+            if (typeof document === 'undefined') {
+                // var Canvas = require('canvas');
+                var paletteCanvas = new Canvas(256, 1);
+            } else {
+                var paletteCanvas = document.createElement('canvas');
+            }
+
+            paletteCanvas.width = 256;
+            paletteCanvas.height = 1;
+
+            var paletteCtx = this.paletteCtx = paletteCanvas.getContext('2d');
+
+            var lineGradient = paletteCtx.createLinearGradient(0, 0, 256, 1);
+
+            for (var key in gradient) {
+                lineGradient.addColorStop(parseFloat(key), gradient[key]);
+            }
+
+            paletteCtx.fillStyle = lineGradient;
+            paletteCtx.fillRect(0, 0, 256, 1);
         }
+    }, {
+        key: "getColor",
+        value: function getColor(value) {
+            var max = this.max;
 
-        _createClass(GLIntensity, [{
-                key: "initPalette",
-                value: function initPalette() {
-                        var gradient = this.gradient;
+            if (value > max) {
+                value = max;
+            }
 
-                        if (typeof document === 'undefined') {
-                                // var Canvas = require('canvas');
-                                var paletteCanvas = new Canvas(256, 1);
-                        } else {
-                                var paletteCanvas = document.createElement('canvas');
-                        }
+            var index = Math.floor(value / max * (256 - 1)) * 4;
 
-                        paletteCanvas.width = 256;
-                        paletteCanvas.height = 1;
+            var imageData = this.paletteCtx.getImageData(0, 0, 256, 1).data;
 
-                        var paletteCtx = this.paletteCtx = paletteCanvas.getContext('2d');
+            return "rgba(" + imageData[index] + ", " + imageData[index + 1] + ", " + imageData[index + 2] + ", " + imageData[index + 3] / 256 + ")";
+        }
+    }, {
+        key: "getSize",
+        value: function getSize(value) {
+            var size = 0;
+            var max = this.max;
+            var maxSize = this.maxSize;
 
-                        var lineGradient = paletteCtx.createLinearGradient(0, 0, 256, 1);
+            if (value > max) {
+                value = max;
+            }
 
-                        for (var key in gradient) {
-                                lineGradient.addColorStop(parseFloat(key), gradient[key]);
-                        }
+            size = value / max * maxSize;
 
-                        paletteCtx.fillStyle = lineGradient;
-                        paletteCtx.fillRect(0, 0, 256, 1);
-                }
-        }, {
-                key: "getColor",
-                value: function getColor(value) {
-                        var max = this.max;
+            return size;
+        }
+    }]);
 
-                        if (value > max) {
-                                value = max;
-                        }
-
-                        var index = Math.floor(value / max * (256 - 1)) * 4;
-
-                        var imageData = this.paletteCtx.getImageData(0, 0, 256, 1).data;
-
-                        return "rgba(" + imageData[index] + ", " + imageData[index + 1] + ", " + imageData[index + 2] + ", " + imageData[index + 3] / 256 + ")";
-                }
-        }, {
-                key: "getSize",
-                value: function getSize(value) {
-                        var size = 0;
-                        var max = this.max;
-                        var maxSize = this.maxSize;
-
-                        if (value > max) {
-                                value = max;
-                        }
-
-                        size = value / max * maxSize;
-
-                        return size;
-                }
-        }]);
-
-        return GLIntensity;
+    return GLIntensity;
 }();
 
 exports.default = GLIntensity;
@@ -872,9 +872,6 @@ var cache = {},
     A = 6378137.0,
     MAXEXTENT = 20037508.342789244;
 
-function isFloat(n){
-    return Number(n) === n && n % 1 !== 0;
-}
 
 // SphericalMercator constructor: precaches calculations
 // for fast tile lookups.
@@ -907,21 +904,6 @@ function SphericalMercator(options) {
 // - `ll` {Array} `[lon, lat]` array of geographic coordinates.
 // - `zoom` {Number} zoom level.
 SphericalMercator.prototype.px = function(ll, zoom) {
-  if (isFloat(zoom)) {
-    var size = this.size * Math.pow(2, zoom);
-    var d = size / 2;
-    var bc = (size / 360);
-    var cc = (size / (2 * Math.PI));
-    var ac = size;
-    var f = Math.min(Math.max(Math.sin(D2R * ll[1]), -0.9999), 0.9999);
-    var x = d + ll[0] * bc;
-    var y = d + 0.5 * Math.log((1 + f) / (1 - f)) * -cc;
-    (x > ac) && (x = ac);
-    (y > ac) && (y = ac);
-    //(x < 0) && (x = 0);
-    //(y < 0) && (y = 0);
-    return [x, y];
-  } else {
     var d = this.zc[zoom];
     var f = Math.min(Math.max(Math.sin(D2R * ll[1]), -0.9999), 0.9999);
     var x = Math.round(d + ll[0] * this.Bc[zoom]);
@@ -931,7 +913,6 @@ SphericalMercator.prototype.px = function(ll, zoom) {
     //(x < 0) && (x = 0);
     //(y < 0) && (y = 0);
     return [x, y];
-  }
 };
 
 // Convert screen pixel value to lon lat
@@ -939,21 +920,10 @@ SphericalMercator.prototype.px = function(ll, zoom) {
 // - `px` {Array} `[x, y]` array of geographic coordinates.
 // - `zoom` {Number} zoom level.
 SphericalMercator.prototype.ll = function(px, zoom) {
-  if (isFloat(zoom)) {
-    var size = this.size * Math.pow(2, zoom);
-    var bc = (size / 360);
-    var cc = (size / (2 * Math.PI));
-    var zc = size / 2;
-    var g = (px[1] - zc) / -cc;
-    var lon = (px[0] - zc) / bc;
-    var lat = R2D * (2 * Math.atan(Math.exp(g)) - 0.5 * Math.PI);
-    return [lon, lat];
-  } else {
     var g = (px[1] - this.zc[zoom]) / (-this.Cc[zoom]);
     var lon = (px[0] - this.zc[zoom]) / this.Bc[zoom];
     var lat = R2D * (2 * Math.atan(Math.exp(g)) - 0.5 * Math.PI);
     return [lon, lat];
-  }
 };
 
 // Convert tile xyz value to bbox of the form `[w, s, e, n]`
@@ -6338,7 +6308,7 @@ module.exports = Circle;
 /* 46 */
 /***/ (function(module, exports) {
 
-module.exports = {"id":"maptalks-gmvi","version":"0.1.0","date":"2018.5.23","skin":"default"}
+module.exports = {"id":"maptalks-gmvi","version":"0.1.0","date":"2018.6.7","skin":"default"}
 
 /***/ })
 /******/ ]);
