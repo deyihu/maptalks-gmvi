@@ -218,6 +218,10 @@ class GMVICanvasLayer extends maptalks.Layer {
           return this;
     }
 
+    identify(e,callback){
+        return this._clickEvent(e,callback);
+    }
+
     getCanvas(){
         return this._canvas;
     }
@@ -590,9 +594,10 @@ class GMVICanvasLayer extends maptalks.Layer {
         let map=this.getMap();
         let coordinates=e.coordinate;
         let pixel=map.coordinateToContainerPoint(coordinates);
-        // console.log(pixel)
-        if(this.options.draw==GL.GMVI.Cluster&&this.status==GL.GMVI.Cluster) {
-            return this;
+        pixel.x=Math.ceil(pixel.x);
+        pixel.y=Math.ceil(pixel.y);
+        if(this.options.draw==GL.GMVI.Cluster&&this.stauts==GL.GMVI.Cluster) {
+            return;
         }
         var canvas=document.createElement('canvas');
         canvas.width=this._canvas.width;
@@ -619,14 +624,19 @@ class GMVICanvasLayer extends maptalks.Layer {
                 ctx.beginPath();
                 SimplePath.draw(ctx, data[i], this.options);
                 ctx.restore();
-                if (ctx.isPointInPath(pixel.x,pixel.y)) {
+                if (ctx.isPointInPath(pixel.x,pixel.y)||ctx.isPointInStroke(pixel.x,pixel.y)) {
                     data[i].location=e;
-                    callback(data[i], e);
-                    return this;
+                    if(callback){
+                         callback(data[i], e);
+                         return ;
+                    }
+                    else{
+                        return data[i];
+                    }
                 }
             }
         }
-        return this;
+       
     }
 
     _initEvent () {
@@ -733,4 +743,3 @@ class GMVICanvasLayerRenderer extends maptalks.renderer.CanvasRenderer{
 }
 GMVICanvasLayer.registerRenderer('canvas',GMVICanvasLayerRenderer);
 GL.GMVI.CanvasLayer=GMVICanvasLayer;
-
