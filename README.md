@@ -77,9 +77,9 @@ more examples:https://deyihu.github.io/src/maptalks-gmvi/examples/
 
 <pre>
 
- 1.maptalks.GMVI.CanvasLayer(id,dataSet,options) //矢量图层
+ 1.maptalks.GMVI.CanvasLayer(id,dataSet,options) //CanvasLayer
 
-  使用CanvasLayer
+    how to use  CanvasLayer
 
 
     var canvasLayer=new maptalks.GMVI.CanvasLayer(id,dataSet,options);
@@ -88,27 +88,27 @@ more examples:https://deyihu.github.io/src/maptalks-gmvi/examples/
 
     map.removeLayer(canvasLayer);
 
-    //重置 配置
+    //reset config
     canvasLayer.setOption(Options);
 
 
-    //获取数据
+    //get data
     canvasLayer.getDatas();
 
-     //重置数据
+     //reset data
      canvasLayer.resetDatas(dataSet);
 
 
-    //添加数据
+    //add data
     canvasLayer.addDatas(dataSet);
 
-    //移除数据
+    //remove data
     canvasLayer.removeDatas([data]);
 
-    //清除数据
+    //clear Layer
     canvasLayer.clear();
 
-     //事件处理，仅支持click event
+     //event ，only support click event
      canvasLayer.on('click',function(e){
 
      })
@@ -137,7 +137,7 @@ more examples:https://deyihu.github.io/src/maptalks-gmvi/examples/
 
 
   <pre>
-  2.maptalks.GMVI.DasetSet是GMvi中统一规范的数据对象，用来保存json数据对象
+  2.maptalks.GMVI.DasetSet  is a data warehouse 
 
             var data = [
                     {
@@ -153,14 +153,14 @@ more examples:https://deyihu.github.io/src/maptalks-gmvi/examples/
                 var dataSet = new maptalks.GMVI.DataSet(data); //data is Array
 
               var data = [
-                // 点数据
+                // Point data
                 {
                     geometry: {
                         type: 'Point',
                         coordinates: [123, 23]
                     }
                 },
-                // 线数据
+                // LineString data
                 {
                     geometry: {
                         type: 'LineString',
@@ -171,7 +171,7 @@ more examples:https://deyihu.github.io/src/maptalks-gmvi/examples/
                     },
                     count: 30
                 },
-                // 面数据
+                // Polygon data
                 {
                     geometry: {
                         type: 'Polygon',
@@ -185,7 +185,7 @@ more examples:https://deyihu.github.io/src/maptalks-gmvi/examples/
                     },
                     count: 30 * Math.random()
                 },
-                //圆
+                //Circle data
                 {
                    geometry: {
                     type: 'Circle',
