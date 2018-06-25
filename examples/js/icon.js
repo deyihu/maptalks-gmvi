@@ -94,17 +94,12 @@ function  canvasTest(img) {
     }
     layer= new maptalks.GMVI.CanvasLayer('ajfljalfas',dataSet1,options);
     map.addLayer(layer);
-    layer.on('click',function (e) {
-        console.log(e)
-        console.log(e.name)
-        var coordinate=e.location.coordinate;
-    })
-
-    layer.on('renderstart',function (e) {
-        console.log(e)
-        // console.log(e.name)
-        // var coordinate=e.location.coordinate;
-    })
+    map.on('click',function(e){
+        let d=layer.identify(e);
+        if(d){
+           console.log(d)
+        }
+     })
     dataSet2= new maptalks.GMVI.DataSet(data2);
 }
 

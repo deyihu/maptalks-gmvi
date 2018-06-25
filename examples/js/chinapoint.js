@@ -21,12 +21,8 @@ function init() {
         })
     });
  
-         request();
-         this.map.on('click',function(e){
-             console.log(e)
-             console.log(map.getZoom())
-        })
- 
+    request();
+    
  }
  
  

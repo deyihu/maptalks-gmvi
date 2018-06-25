@@ -34,10 +34,7 @@ function init() {
         })
     });
 
-    this.map.on('click',function(e){
-        console.log(e)
-        console.log(map.getZoom())
-    })
+
     setTimeout(function(e){
         canvasTest();
     },500)
@@ -84,9 +81,12 @@ function  canvasTest() {
     layer= new maptalks.GMVI.CanvasLayer('ajfljaslf',dataSet,options);//.addTo(this.map);
     map.addLayer(layer)
     
-    // layer.on('click',function (e) {
-    //     console.log(e)
-    // })
+    map.on('click',function(e){
+        let d=layer.identify(e);
+        if(d){
+           console.log(d)
+        }
+     })
 }
 
 init();

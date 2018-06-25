@@ -17,10 +17,8 @@ function init() {
             subdomains: ['a','b','c','d']
         })
     });
-    map.on('click',function(e){
-        console.log(e)
-    })
-        canvasTest();
+ 
+    canvasTest();
 }
 
 function  canvasTest() {
@@ -61,17 +59,13 @@ function  canvasTest() {
     }
     var canvasLayer =new maptalks.GMVI.CanvasLayer('jlasfj',dataSet,options);
     map.addLayer(canvasLayer)
-    var canvasLayer=new maptalks.GMVI.CanvasLayer('111',dataSet,options);
-    canvasLayer.addTo(map)
-    canvasLayer.on('click',function(e){
-       console.log(e)
-       console.log(e.name)
-       var coordinate=e.location.coordinate;
-       // popup.setTitle('info')
-       // popup.setContent(e.location.coordinate.toString())
-       // popup.addTo(map).show(coordinate);
 
-   })
+    map.on('click',function(e){
+        let d=canvasLayer.identify(e);
+        if(d){
+           console.log(d)
+        }
+     })
 
 }
 init();

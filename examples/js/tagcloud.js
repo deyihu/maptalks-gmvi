@@ -76,4 +76,3 @@ function createTag() {
 }
 
 init();
-// GL.init(init,'conf.json')

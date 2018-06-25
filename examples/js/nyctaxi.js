@@ -68,7 +68,3 @@ function init() {
 
 }
 
-
-
-
-GL.init(init,'conf.json')

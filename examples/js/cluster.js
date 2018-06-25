@@ -20,33 +20,10 @@ function init() {
             attribution: '&copy; Google Maps'
           })
     });
-    map.on('click',function(e){
-        // console.log(e)
-    })
+
 
     clusterTest();
-    var point = new maptalks.Marker(
-        [-0.113049, 51.498568],
-        {
-          visible : true,
-          editable : true,
-          cursor : 'pointer',
-          shadowBlur : 0,
-          shadowColor : 'black',
-          draggable : false,
-          dragShadow : false, // display a shadow during dragging
-          drawOnAxis : null,  // force dragging stick on a axis, can be: x, y
-          symbol : {
-            'textFaceName' : 'sans-serif',
-            'textName' : 'MapTalks',
-            'textFill' : '#34495e',
-            'textHorizontalAlignment' : 'right',
-            'textSize' : 40
-          }
-        }
-      );
-
-      new maptalks.VectorLayer('vector', point).addTo(map);
+    
 
 
 
@@ -87,15 +64,12 @@ function  clusterTest() {
     }
     var layer=new maptalks.GMVI.CanvasLayer('ajkfldjalfjla',dataSet,options);
     map.addLayer(layer)
-    layer.on('click',function(e){
-        console.log(e)
-        console.log(e.name)
-        var coordinate=e.location.coordinate;
-        // popup.setTitle('info')
-        // popup.setContent(e.location.coordinate.toString())
-        // popup.addTo(map).show(coordinate);
-
-    })
+    map.on('click',function(e){
+        let d=layer.identify(e);
+        if(d){
+           console.log(d)
+        }
+     })
 
 
 }

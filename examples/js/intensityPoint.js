@@ -18,9 +18,6 @@ function init() {
             subdomains: ['a','b','c','d']
         })
     });
-    map.on('click',function(e){
-        console.log(e)
-    })
     canvasTest();
 
 }
@@ -60,16 +57,12 @@ function  canvasTest() {
     var layer = new maptalks.GMVI.CanvasLayer('jalsdjflasf',dataSet,options);
     map.addLayer(layer)
 
-    layer.on('click',function(e){
-        console.log(e)
-        console.log(e.name)
-        var coordinate=e.location.coordinate;
-        // popup.setTitle('info')
-        // popup.setContent(e.location.coordinate.toString())
-        // popup.addTo(map).show(coordinate);
-
-    })
+    map.on('click',function(e){
+        let d=layer.identify(e);
+        if(d){
+           console.log(d)
+        }
+     })
 
 }
 init();
-// GL.init(init,'conf.json')

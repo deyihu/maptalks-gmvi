@@ -74,4 +74,3 @@ function  canvasTest() {
 
 }
 init();
-// GL.init(init,'conf.json')

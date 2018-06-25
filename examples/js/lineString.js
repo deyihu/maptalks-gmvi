@@ -17,9 +17,6 @@ function init() {
             subdomains: ['a','b','c','d']
         })
     });
-    map.on('click',function(e){
-        console.log(e)
-    })
     canvasTest();
 
 }
@@ -36,35 +33,33 @@ function  canvasTest() {
         var lnglatArr=roadLine.split(";");
         var coordinates=[];
         for(var i=0;i<lnglatArr.length;i++)
-            coordinates.push(lnglatArr[i].split(","))
-            data.push({
-                geometry: {
-                    type: 'LineString',
-                    coordinates: coordinates
-                },
-                time: 100 * Math.random(),
-                // id:GL.H.uuid()
-            });
+            coordinates.push(lnglatArr[i].split(","));
+            // if(coordinates.length===2)
+                data.push({
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: coordinates
+                    },
+                    time: 100 * Math.random(),
+                    // id:GL.H.uuid()
+                });
     }
     var dataSet = new maptalks.GMVI.DataSet(data);
 
     var options = {
         strokeStyle: "rgba(255, 50, 50, 0.3)",
-        lineWidth: 3,
+        lineWidth: 6,
         max: 30,
         globalCompositeOperation:"lighter",
         draw: 'simple',
     }
    var canvasLayer=new maptalks.GMVI.CanvasLayer('sjdalfj',dataSet,options);
    map.addLayer(canvasLayer);
-   canvasLayer.on('click',function(e){
-        console.log(e)
-        console.log(e.name)
-        var coordinate=e.location.coordinate;
-        // popup.setTitle('info')
-        // popup.setContent(e.location.coordinate.toString())
-        // popup.addTo(map).show(coordinate);
-
+   map.on('click',function(e){
+       let d=canvasLayer.identify(e);
+       if(d){
+          console.log(d)
+       }
     })
 
 

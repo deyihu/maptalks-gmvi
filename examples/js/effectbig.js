@@ -18,9 +18,6 @@ function init() {
             subdomains: ['a','b','c','d']
         })
     });
-    this.map.on("click",function (e) {
-        console.log(e.latlng)
-    })
     setTimeout(function() {
         request();
     }, 500);

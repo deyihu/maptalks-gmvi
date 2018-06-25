@@ -16,28 +16,6 @@ function init() {
             subdomains: ['a','b','c','d']
         })
     });
-    map.on('click',function(e){
-        console.log(e)
-    })
-    
-   
-        
-    var point = new maptalks.Marker(
-        [120.61080763078974, 31.308724198660883],
-        {
-        properties : {
-            altitude : 0
-        }
-        }
-    );
-
-    
-
-    var layer=new maptalks.VectorLayer('vector', [ point], {
-        enableAltitude : true,        // enable altitude
-        altitudeProperty : 'altitude' // altitude property in properties, default by 'altitude'
-    });
-    map.addLayer(layer);
  
     canvasTest();
  }
@@ -69,33 +47,18 @@ function init() {
          shadowColor: 'rgba(255, 50, 50, 1)',
          shadowBlur: 10,
          globalCompositeOperation: 'lighter',
-        //  animation: {
-        //      type: 'time',
-        //      stepsRange: {
-        //          start: 0,
-        //          end: 100
-        //      },
-        //      steps: 100,
-        //      trails: 10,
-        //      duration: 5,
-        //  },
          size: 5,
          draw: 'simple',
      }
      var canvasLayer=new maptalks.GMVI.CanvasLayer('111',dataSet,options);
      canvasLayer.addTo(map)
-     canvasLayer.on('click',function(e){
-        console.log(e)
-        console.log(e.name)
-        var coordinate=e.location.coordinate;
-        // popup.setTitle('info')
-        // popup.setContent(e.location.coordinate.toString())
-        // popup.addTo(map).show(coordinate);
+     map.on('click',function(e){
+        let d=canvasLayer.identify(e);
+        if(d){
+           console.log(d)
+        }
+     })
 
-    })
-
- 
-     // this.map.removeLayer(heatLayer)
  
  }
  

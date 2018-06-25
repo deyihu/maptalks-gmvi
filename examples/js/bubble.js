@@ -16,9 +16,6 @@ function init() {
             subdomains: ['a','b','c','d']
         })
     });
-    map.on('click',function(e){
-        console.log(e)
-    })
     
     canvasTest();
     // this.map.setView([31.307282946045294,120.60949731583878])
@@ -57,11 +54,12 @@ function  canvasTest() {
     canvasLayer=new maptalks.GMVI.CanvasLayer("ajsflja",dataSet,options);
     map.addLayer(canvasLayer)
     
-    canvasLayer.on('click',function (e) {
-        console.log(e)
-        console.log(e.name)
-        var coordinate=e.location.coordinate;
-    })
+    map.on('click',function(e){
+        let d=canvasLayer.identify(e);
+        if(d){
+           console.log(d)
+        }
+     })
 
 }
 init();

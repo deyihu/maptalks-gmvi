@@ -17,13 +17,8 @@ function init() {
             subdomains: ['a','b','c','d']
         })
     });
-    map.on('click',function(e){
-        console.log(e)
-    })
-
     canvasTest();
-    
-    // this.map.setView([31.307282946045294,120.60949731583878])
+
 
 }
 

@@ -17,9 +17,6 @@ function init() {
             subdomains: ['a','b','c','d']
         })
     });
-    map.on('click',function(e){
-        console.log(e)
-    })
     canvasTest();
 }
 
@@ -59,7 +56,13 @@ function  canvasTest() {
         max: 10,
     }
     var heatLayer =new maptalks.GMVI.CanvasLayer('jalsjflasfja',dataSet,options);
-    map.addLayer(heatLayer)
+    map.addLayer(heatLayer);
+    map.on('click',function(e){
+        let d=heatLayer.identify(e);
+        if(d){
+           console.log(d)
+        }
+     })
 
 }
 init();

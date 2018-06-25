@@ -68,10 +68,6 @@ function init() {
     }
     var heatLayer = new maptalks.GMVI.CanvasLayer('ajdflajsflas',dataSet,options)
     map.addLayer(heatLayer)
-     
-     // layer.on('click',function (e) {
-     //     console.log(e)
-     // })
  }
 init();
  

@@ -81,12 +81,9 @@ function  canvasTest() {
         },
         draw: 'heatmap'
     }
-    layer= new maptalks.GMVI.CanvasLayer('jlajflas',dataSet,options);//.addTo(this.map);
+    layer= new maptalks.GMVI.CanvasLayer('jlajflas',dataSet,options);
     map.addLayer(layer)
-    
-    // layer.on('click',function (e) {
-    //     console.log(e)
-    // })
+
 }
 init();
 
