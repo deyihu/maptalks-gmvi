@@ -606,25 +606,30 @@ class GMVICanvasLayer extends maptalks.Layer {
         var data = this.data;
         if(this.options.draw==GL.GMVI.Cluster) data=this.unClustersData;
         for (var i = 0; i < data.length; i++) {
+            let type=data[i].geometry.type;
             if(this.canvasType instanceof CanvasMigrateLines){
                var xy=data[i].xy;
                for(var j=0,len=xy.length;j<len-1;j++){
                     var _xy=[xy[j],xy[j+1]]
                     ctx.beginPath(); 
                     SimplePath.drawArc(ctx, _xy, this.options);
-                    if (ctx.isPointInPath(pixel.x,pixel.y)) {
+                    if (ctx.isPointInStroke(pixel.x,pixel.y)) {
                         data[i].location=e;
                         callback(data[i], e);
                         return this;
                     }
                }
-
-
             }else{
                 ctx.beginPath();
                 SimplePath.draw(ctx, data[i], this.options);
                 ctx.restore();
-                if (ctx.isPointInPath(pixel.x,pixel.y)||ctx.isPointInStroke(pixel.x,pixel.y)) {
+                let isHit=false;
+                if(type===GL.GMVI.Geometry.LineString||type===GL.GMVI.Geometry.Polyline){
+                    isHit=ctx.isPointInStroke(pixel.x,pixel.y)
+                }else{
+                    isHit=ctx.isPointInPath(pixel.x,pixel.y);
+                }
+                if (isHit) {
                     data[i].location=e;
                     if(callback){
                          callback(data[i], e);
@@ -636,7 +641,6 @@ class GMVICanvasLayer extends maptalks.Layer {
                 }
             }
         }
-       
     }
 
     _initEvent () {

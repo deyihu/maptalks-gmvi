@@ -3513,13 +3513,14 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
             var data = this.data;
             if (this.options.draw == GL.GMVI.Cluster) data = this.unClustersData;
             for (var i = 0; i < data.length; i++) {
+                var type = data[i].geometry.type;
                 if (this.canvasType instanceof _GLCanvasMigrateLines2.default) {
                     var xy = data[i].xy;
                     for (var j = 0, len = xy.length; j < len - 1; j++) {
                         var _xy = [xy[j], xy[j + 1]];
                         ctx.beginPath();
                         _GLSimplePath2.default.drawArc(ctx, _xy, this.options);
-                        if (ctx.isPointInPath(pixel.x, pixel.y)) {
+                        if (ctx.isPointInStroke(pixel.x, pixel.y)) {
                             data[i].location = e;
                             callback(data[i], e);
                             return this;
@@ -3529,7 +3530,13 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
                     ctx.beginPath();
                     _GLSimplePath2.default.draw(ctx, data[i], this.options);
                     ctx.restore();
-                    if (ctx.isPointInPath(pixel.x, pixel.y) || ctx.isPointInStroke(pixel.x, pixel.y)) {
+                    var isHit = false;
+                    if (type === GL.GMVI.Geometry.LineString || type === GL.GMVI.Geometry.Polyline) {
+                        isHit = ctx.isPointInStroke(pixel.x, pixel.y);
+                    } else {
+                        isHit = ctx.isPointInPath(pixel.x, pixel.y);
+                    }
+                    if (isHit) {
                         data[i].location = e;
                         if (callback) {
                             callback(data[i], e);
@@ -6347,7 +6354,7 @@ module.exports = Circle;
 /* 46 */
 /***/ (function(module, exports) {
 
-module.exports = {"id":"maptalks-gmvi","version":"0.1.0","date":"2018.6.25","skin":"default"}
+module.exports = {"id":"maptalks-gmvi","version":"0.1.1","date":"2018.6.25","skin":"default"}
 
 /***/ })
 /******/ ]);
