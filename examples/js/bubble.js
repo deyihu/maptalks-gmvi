@@ -12,7 +12,7 @@ function init() {
         'content' : '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         },
         baseLayer : new maptalks.TileLayer('tile',{
-            urlTemplate: '//{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+            urlTemplate: '//a.tiles.mapbox.com/v3/spatialdev.map-c9z2cyef/{z}/{x}/{y}.png',
             subdomains: ['a','b','c','d']
         })
     });
@@ -38,8 +38,8 @@ function  canvasTest() {
             },
             count: 30 * Math.random(),
             time: Math.random() * 100,
-            color:randomColor(),
-            fillStyle:randomColor()
+            // color:randomColor(),
+            // fillStyle:randomColor()
         });
 
     }
