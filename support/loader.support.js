@@ -1,6 +1,4 @@
-/**
- * Created by Blue on 2017/5/16.
- */
+
 const path = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 

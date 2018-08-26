@@ -1,6 +1,4 @@
-/**
- * Created by Blue on 2017/5/16.
- */
+
 const v = require('../package.json').version;
 const date = new Date();
 const dateStr = `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;

@@ -1,6 +1,3 @@
-/**
- * @author kyle / http://nikai.us/
- */
 
 export default function (context) {
     var devicePixelRatio = window.devicePixelRatio;

@@ -1,26 +1,24 @@
 
 
 //命名空间
-import  "./src/utils/GLGMVI"
+import  "./src/GMVI"
 
-import  "./src/data/GLDataSet"
-import  "./src/data/GLCsv"
-import  "./src/data/GLGeoJson"
+import  "./src/data/DataSet"
+import  "./src/data/Csv"
+import  "./src/data/GeoJson"
 
-import  "./src/utils/GLClusterUtil"
-import  "./src/utils/GLSuperCluster"
-import  "./src/utils/GLCityCenterUtil"
-import  "./src/utils/GLForceEdgeBundlingUtil"
-import  "./src/utils/GLCurveUtil"
-import  "./src/utils/Extend"
+import  "./src/utils/SuperCluster"
+import  "./src/utils/CityCenterUtil"
+import  "./src/utils/ForceEdgeBundlingUtil"
+import  "./src/utils/CurveUtil"
 
-import  "./src/layer/GLCanvasLayer"
+import  "./src/layer/CanvasLayer"
 
 import v from "./src/version.json";
 
-GL.GMVI.OPTION={
+GMVI.OPTION={
     size: 5, 
-    id: 'UUID', // 图层主键(若不设置为GL.H.uuid())
+    id: 'UUID', // 图层主键(若不设置为H.uuid())
     fillStyle: 'rgba(200, 200, 50, 1)', // 填充颜色，绘制点，多边形，圆等会用到
     strokeStyle: 'rgba(0, 0, 255, 1)', // 描边颜色，绘制线路时用到
     lineWidth: 4, // 描边宽度
@@ -70,15 +68,15 @@ const version = v.version;
 const date =v.date;
 const descript = `${name}: ${version} Built by Iverson.hu,  [${date}]`;
 
-GL.GMVI.VERSION=descript;
-GL.GMVI.toString=function () {
-   return GL.GMVI.VERSION;
+GMVI.VERSION=descript;
+GMVI.toString=function () {
+   return GMVI.VERSION;
 }
 if(!window.maptalks){
     throw new Error("not find maptalks lib")
 }
 if(window.maptalks){
-    window.maptalks.GMVI=GL.GMVI;
+    window.maptalks.GMVI=GMVI;
 }
 
 

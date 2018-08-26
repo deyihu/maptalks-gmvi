@@ -127,7 +127,7 @@ exports.default = BaseCanvas;
 
 
 Object.defineProperty(exports, "__esModule", {
-        value: true
+    value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -138,84 +138,84 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * Created by Administrator on 2016/11/26.
  */
 
-var GLIntensity = function () {
-        function GLIntensity(options) {
-                _classCallCheck(this, GLIntensity);
+var Intensity = function () {
+    function Intensity(options) {
+        _classCallCheck(this, Intensity);
 
-                options = options || {};
-                this.gradient = options.gradient || {
-                        0.25: "rgba(0, 0, 255, 1)",
-                        0.55: "rgba(0, 255, 0, 1)",
-                        0.85: "rgba(255, 255, 0, 1)",
-                        1.0: "rgba(255, 0, 0, 1)"
-                };
-                this.maxSize = options.maxSize || 35;
-                this.max = options.max || 100;
-                this.initPalette();
+        options = options || {};
+        this.gradient = options.gradient || {
+            0.25: "rgba(0, 0, 255, 1)",
+            0.55: "rgba(0, 255, 0, 1)",
+            0.85: "rgba(255, 255, 0, 1)",
+            1.0: "rgba(255, 0, 0, 1)"
+        };
+        this.maxSize = options.maxSize || 35;
+        this.max = options.max || 100;
+        this.initPalette();
+    }
+
+    _createClass(Intensity, [{
+        key: "initPalette",
+        value: function initPalette() {
+            var gradient = this.gradient;
+
+            if (typeof document === 'undefined') {
+                // var Canvas = require('canvas');
+                var paletteCanvas = new Canvas(256, 1);
+            } else {
+                var paletteCanvas = document.createElement('canvas');
+            }
+
+            paletteCanvas.width = 256;
+            paletteCanvas.height = 1;
+
+            var paletteCtx = this.paletteCtx = paletteCanvas.getContext('2d');
+
+            var lineGradient = paletteCtx.createLinearGradient(0, 0, 256, 1);
+
+            for (var key in gradient) {
+                lineGradient.addColorStop(parseFloat(key), gradient[key]);
+            }
+
+            paletteCtx.fillStyle = lineGradient;
+            paletteCtx.fillRect(0, 0, 256, 1);
         }
+    }, {
+        key: "getColor",
+        value: function getColor(value) {
+            var max = this.max;
 
-        _createClass(GLIntensity, [{
-                key: "initPalette",
-                value: function initPalette() {
-                        var gradient = this.gradient;
+            if (value > max) {
+                value = max;
+            }
 
-                        if (typeof document === 'undefined') {
-                                // var Canvas = require('canvas');
-                                var paletteCanvas = new Canvas(256, 1);
-                        } else {
-                                var paletteCanvas = document.createElement('canvas');
-                        }
+            var index = Math.floor(value / max * (256 - 1)) * 4;
 
-                        paletteCanvas.width = 256;
-                        paletteCanvas.height = 1;
+            var imageData = this.paletteCtx.getImageData(0, 0, 256, 1).data;
 
-                        var paletteCtx = this.paletteCtx = paletteCanvas.getContext('2d');
+            return "rgba(" + imageData[index] + ", " + imageData[index + 1] + ", " + imageData[index + 2] + ", " + imageData[index + 3] / 256 + ")";
+        }
+    }, {
+        key: "getSize",
+        value: function getSize(value) {
+            var size = 0;
+            var max = this.max;
+            var maxSize = this.maxSize;
 
-                        var lineGradient = paletteCtx.createLinearGradient(0, 0, 256, 1);
+            if (value > max) {
+                value = max;
+            }
 
-                        for (var key in gradient) {
-                                lineGradient.addColorStop(parseFloat(key), gradient[key]);
-                        }
+            size = value / max * maxSize;
 
-                        paletteCtx.fillStyle = lineGradient;
-                        paletteCtx.fillRect(0, 0, 256, 1);
-                }
-        }, {
-                key: "getColor",
-                value: function getColor(value) {
-                        var max = this.max;
+            return size;
+        }
+    }]);
 
-                        if (value > max) {
-                                value = max;
-                        }
-
-                        var index = Math.floor(value / max * (256 - 1)) * 4;
-
-                        var imageData = this.paletteCtx.getImageData(0, 0, 256, 1).data;
-
-                        return "rgba(" + imageData[index] + ", " + imageData[index + 1] + ", " + imageData[index + 2] + ", " + imageData[index + 3] / 256 + ")";
-                }
-        }, {
-                key: "getSize",
-                value: function getSize(value) {
-                        var size = 0;
-                        var max = this.max;
-                        var maxSize = this.maxSize;
-
-                        if (value > max) {
-                                value = max;
-                        }
-
-                        size = value / max * maxSize;
-
-                        return size;
-                }
-        }]);
-
-        return GLIntensity;
+    return Intensity;
 }();
 
-exports.default = GLIntensity;
+exports.default = Intensity;
 
 /***/ }),
 /* 2 */
@@ -343,16 +343,12 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/**
- * @author kyle / http://nikai.us/
- */
-
 // import Event from "../utils/Event";
 
 
-var GLDataSet = function () {
-    function GLDataSet(data, options) {
-        _classCallCheck(this, GLDataSet);
+var DataSet = function () {
+    function DataSet(data, options) {
+        _classCallCheck(this, DataSet);
 
         this._options = options || {};
         this._data = []; // map with data indexed by id
@@ -361,7 +357,7 @@ var GLDataSet = function () {
         this._data = data;
     }
 
-    _createClass(GLDataSet, [{
+    _createClass(DataSet, [{
         key: 'add',
         value: function add(data, senderId) {
             if (Array.isArray(data)) {
@@ -440,20 +436,20 @@ var GLDataSet = function () {
 
                 if (data[i].geometry) {
 
-                    if (data[i].geometry.type === GL.GMVI.Geometry.Point) {
+                    if (data[i].geometry.type === GMVI.Geometry.Point) {
                         var coordinates = data[i].geometry.coordinates;
                         data[i].geometry._coordinates = transferFn(coordinates);
                     }
 
-                    if (data[i].geometry.type === GL.GMVI.Geometry.Polygon || data[i].geometry.type === GL.GMVI.Geometry.MultiPolygon) {
+                    if (data[i].geometry.type === GMVI.Geometry.Polygon || data[i].geometry.type === GMVI.Geometry.MultiPolygon) {
 
                         var coordinates = data[i].geometry.coordinates;
 
-                        if (data[i].geometry.type === GL.GMVI.Geometry.Polygon) {
+                        if (data[i].geometry.type === GMVI.Geometry.Polygon) {
 
                             var newCoordinates = getPolygon(coordinates);
                             data[i].geometry._coordinates = newCoordinates;
-                        } else if (data[i].geometry.type === GL.Geomtry.MultiPolygon) {
+                        } else if (data[i].geometry.type === Geomtry.MultiPolygon) {
                             var newCoordinates = [];
                             for (var c = 0; c < coordinates.length; c++) {
                                 var polygon = coordinates[c];
@@ -465,7 +461,7 @@ var GLDataSet = function () {
                         }
                     }
 
-                    if (data[i].geometry.type === GL.Geomtry.LineString) {
+                    if (data[i].geometry.type === Geomtry.LineString) {
                         var coordinates = data[i].geometry.coordinates;
                         var newCoordinates = [];
                         for (var j = 0; j < coordinates.length; j++) {
@@ -516,7 +512,7 @@ var GLDataSet = function () {
                 var coordinate = this._data[i].geometry.coordinates;
                 var type = this._data[i].geometry.type;
 
-                if (type == GL.GMVI.Geometry.Point) {
+                if (type == GMVI.Geometry.Point) {
                     this._data[i].geometry.mercator_coordinates = proj4('EPSG:4326', 'EPSG:3857', coordinate);
                 } else {
                     var mercator_coordinates = [];
@@ -530,10 +526,10 @@ var GLDataSet = function () {
         }
     }]);
 
-    return GLDataSet;
+    return DataSet;
 }();
 
-exports.default = GL.GMVI.DataSet = GLDataSet;
+exports.default = GMVI.DataSet = DataSet;
 //
 // function deepCopy(obj) {
 //     var newObj;
@@ -585,28 +581,28 @@ var SimplePath = function () {
         key: 'draw',
         value: function draw(context, data, options) {
             var type = data.geometry.type;
-            if (type == GL.GMVI.Geometry.Polyline) type = GL.GMVI.Geometry.LineString;
+            if (type == GMVI.Geometry.Polyline) type = GMVI.Geometry.LineString;
             var xy = data.xy;
-            var symbol = options.symbol || GL.GMVI.Geometry.Circle;
+            var symbol = options.symbol || GMVI.Geometry.Circle;
             switch (type) {
-                case GL.GMVI.Geometry.Point:
+                case GMVI.Geometry.Point:
                     var size = data._size || data.size || options._size || options.size || 12;
                     if (data.icon) size = Math.min(data.icon.width, data.icon.height) / 2;
                     context.moveTo(data.x, data.y);
-                    if (options.symbol === GL.GMVI.Rect) {
+                    if (options.symbol === GMVI.Rect) {
                         context.rect(xy[0], xy[1], size, size);
                     } else {
                         context.arc(xy[0], xy[1], size, 0, Math.PI * 2);
                     }
                     break;
-                case GL.GMVI.Geometry.Circle:
+                case GMVI.Geometry.Circle:
                     // var size=data.length;
                     // var xy=data.xy;
                     // context.arc(xy[0],xy[1], size, 0, Math.PI * 2);
 
                     this.drawPolygon(context, xy);
                     break;
-                case GL.GMVI.Geometry.LineString:
+                case GMVI.Geometry.LineString:
                     context.lineWidth = options.lineWidth || 3;
                     for (var j = 0; j < xy.length; j++) {
                         var _xy = xy[j];
@@ -617,10 +613,10 @@ var SimplePath = function () {
                         }
                     }
                     break;
-                case GL.GMVI.Geometry.Polygon:
+                case GMVI.Geometry.Polygon:
                     this.drawPolygon(context, xy);
                     break;
-                case GL.GMVI.Geometry.Rectangle:
+                case GMVI.Geometry.Rectangle:
                     var width = data.width,
                         height = data.height,
                         rotate = data.rotate || 0;
@@ -872,9 +868,6 @@ var cache = {},
     A = 6378137.0,
     MAXEXTENT = 20037508.342789244;
 
-function isFloat(n){
-    return Number(n) === n && n % 1 !== 0;
-}
 
 // SphericalMercator constructor: precaches calculations
 // for fast tile lookups.
@@ -907,21 +900,6 @@ function SphericalMercator(options) {
 // - `ll` {Array} `[lon, lat]` array of geographic coordinates.
 // - `zoom` {Number} zoom level.
 SphericalMercator.prototype.px = function(ll, zoom) {
-  if (isFloat(zoom)) {
-    var size = this.size * Math.pow(2, zoom);
-    var d = size / 2;
-    var bc = (size / 360);
-    var cc = (size / (2 * Math.PI));
-    var ac = size;
-    var f = Math.min(Math.max(Math.sin(D2R * ll[1]), -0.9999), 0.9999);
-    var x = d + ll[0] * bc;
-    var y = d + 0.5 * Math.log((1 + f) / (1 - f)) * -cc;
-    (x > ac) && (x = ac);
-    (y > ac) && (y = ac);
-    //(x < 0) && (x = 0);
-    //(y < 0) && (y = 0);
-    return [x, y];
-  } else {
     var d = this.zc[zoom];
     var f = Math.min(Math.max(Math.sin(D2R * ll[1]), -0.9999), 0.9999);
     var x = Math.round(d + ll[0] * this.Bc[zoom]);
@@ -931,7 +909,6 @@ SphericalMercator.prototype.px = function(ll, zoom) {
     //(x < 0) && (x = 0);
     //(y < 0) && (y = 0);
     return [x, y];
-  }
 };
 
 // Convert screen pixel value to lon lat
@@ -939,21 +916,10 @@ SphericalMercator.prototype.px = function(ll, zoom) {
 // - `px` {Array} `[x, y]` array of geographic coordinates.
 // - `zoom` {Number} zoom level.
 SphericalMercator.prototype.ll = function(px, zoom) {
-  if (isFloat(zoom)) {
-    var size = this.size * Math.pow(2, zoom);
-    var bc = (size / 360);
-    var cc = (size / (2 * Math.PI));
-    var zc = size / 2;
-    var g = (px[1] - zc) / -cc;
-    var lon = (px[0] - zc) / bc;
-    var lat = R2D * (2 * Math.atan(Math.exp(g)) - 0.5 * Math.PI);
-    return [lon, lat];
-  } else {
     var g = (px[1] - this.zc[zoom]) / (-this.Cc[zoom]);
     var lon = (px[0] - this.zc[zoom]) / this.Bc[zoom];
     var lat = R2D * (2 * Math.atan(Math.exp(g)) - 0.5 * Math.PI);
     return [lon, lat];
-  }
 };
 
 // Convert tile xyz value to bbox of the form `[w, s, e, n]`
@@ -1082,13 +1048,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * Created by Administrator on 2016/11/28.
  */
 
-var GLCanvas = function GLCanvas(el, options) {
-    _classCallCheck(this, GLCanvas);
+var Canvas = function Canvas(el, options) {
+    _classCallCheck(this, Canvas);
 
     var el = document.getElementById(el);
 };
 
-exports.default = GLCanvas;
+exports.default = Canvas;
 
 /***/ }),
 /* 10 */
@@ -1261,20 +1227,16 @@ __webpack_require__(18);
 
 __webpack_require__(19);
 
-__webpack_require__(20);
-
-__webpack_require__(22);
-
-var _version = __webpack_require__(46);
+var _version = __webpack_require__(43);
 
 var _version2 = _interopRequireDefault(_version);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //命名空间
-GL.GMVI.OPTION = {
+GMVI.OPTION = {
     size: 5,
-    id: 'UUID', // 图层主键(若不设置为GL.H.uuid())
+    id: 'UUID', // 图层主键(若不设置为H.uuid())
     fillStyle: 'rgba(200, 200, 50, 1)', // 填充颜色，绘制点，多边形，圆等会用到
     strokeStyle: 'rgba(0, 0, 255, 1)', // 描边颜色，绘制线路时用到
     lineWidth: 4, // 描边宽度
@@ -1321,15 +1283,15 @@ var version = _version2.default.version;
 var date = _version2.default.date;
 var descript = name + ": " + version + " Built by Iverson.hu,  [" + date + "]";
 
-GL.GMVI.VERSION = descript;
-GL.GMVI.toString = function () {
-    return GL.GMVI.VERSION;
+GMVI.VERSION = descript;
+GMVI.toString = function () {
+    return GMVI.VERSION;
 };
 if (!window.maptalks) {
     throw new Error("not find maptalks lib");
 }
 if (window.maptalks) {
-    window.maptalks.GMVI = GL.GMVI;
+    window.maptalks.GMVI = GMVI;
 }
 
 /***/ }),
@@ -1343,48 +1305,46 @@ if (window.maptalks) {
 全局常量
  */
 
-var GL = window.GL || {};
-window.GL = GL;
-GL.GMVI = window.GL.GMVI || {};
-GL.GMVI.Geometry = GL.GMVI.Geometry || {};
-GL.GMVI.Geometry.LineString = 'LineString';
-GL.GMVI.Geometry.Point = 'Point';
-GL.GMVI.Geometry.Polyline = 'Polyline';
-GL.GMVI.Geometry.Polygon = 'Polygon';
-GL.GMVI.Geometry.Rectangle = 'Rectangle';
-GL.GMVI.Geometry.Circle = 'Circle';
-GL.GMVI.Geometry.MultiPolygon = 'MultiPolygon';
+var GMVI = window.GMVI || {};
+GMVI.Geometry = GMVI.Geometry || {};
+GMVI.Geometry.LineString = 'LineString';
+GMVI.Geometry.Point = 'Point';
+GMVI.Geometry.Polyline = 'Polyline';
+GMVI.Geometry.Polygon = 'Polygon';
+GMVI.Geometry.Rectangle = 'Rectangle';
+GMVI.Geometry.Circle = 'Circle';
+GMVI.Geometry.MultiPolygon = 'MultiPolygon';
 
-GL.GMVI.Circle = 'circle';
-GL.GMVI.Rect = 'rect';
-GL.GMVI.Bubble = 'bubble';
-GL.GMVI.Intensity = 'intensity';
-GL.GMVI.Category = 'category';
-GL.GMVI.Choropleth = 'choropleth';
-GL.GMVI.Simple = 'simple';
-GL.GMVI.Effect = 'effect';
-GL.GMVI.Heatmap = 'heatmap';
-GL.GMVI.Grid = 'grid';
-GL.GMVI.Honeycomb = 'honeycomb';
-GL.GMVI.Text = 'text';
-GL.GMVI.Icon = 'icon';
-GL.GMVI.Cluster = 'cluster';
-GL.GMVI.TagCloud = "tagcloud";
-GL.GMVI.Webgl = 'webgl';
-GL.GMVI.Migrate = 'migrate';
-GL.GMVI.Bar = 'bar';
-GL.GMVI.WaterBubble = 'waterbubble';
-GL.GMVI.Radiation = 'radiation';
-GL.GMVI.Radial = 'radial';
-GL.GMVI.Star = 'star';
-GL.GMVI.Percent = 'percent';
-GL.GMVI.Video = 'video';
-GL.GMVI.Scatter = 'scatter';
-GL.GMVI.MigrateLines = 'migrateLines';
-GL.GMVI.Arrow = 'arrow';
+GMVI.Circle = 'circle';
+GMVI.Rect = 'rect';
+GMVI.Bubble = 'bubble';
+GMVI.Intensity = 'intensity';
+GMVI.Category = 'category';
+GMVI.Choropleth = 'choropleth';
+GMVI.Simple = 'simple';
+GMVI.Effect = 'effect';
+GMVI.Heatmap = 'heatmap';
+GMVI.Grid = 'grid';
+GMVI.Honeycomb = 'honeycomb';
+GMVI.Text = 'text';
+GMVI.Icon = 'icon';
+GMVI.Cluster = 'cluster';
+GMVI.TagCloud = "tagcloud";
+GMVI.Webgl = 'webgl';
+GMVI.Migrate = 'migrate';
+GMVI.Bar = 'bar';
+GMVI.WaterBubble = 'waterbubble';
+GMVI.Radiation = 'radiation';
+GMVI.Radial = 'radial';
+GMVI.Star = 'star';
+GMVI.Percent = 'percent';
+GMVI.Video = 'video';
+GMVI.Scatter = 'scatter';
+GMVI.MigrateLines = 'migrateLines';
+GMVI.Arrow = 'arrow';
 
 var CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
-GL.GMVI.uuid = function () {
+GMVI.uuid = function () {
     var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'ID';
 
     var uuid = new Array(36),
@@ -1404,6 +1364,7 @@ GL.GMVI.uuid = function () {
     }
     return prefix + '-' + uuid.join('');
 };
+window.GMVI = GMVI;
 
 /***/ }),
 /* 13 */
@@ -1420,20 +1381,20 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * Created by Administrator on 2016/11/26.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _GLDataSet = __webpack_require__(4);
+var _DataSet = __webpack_require__(4);
 
-var _GLDataSet2 = _interopRequireDefault(_GLDataSet);
+var _DataSet2 = _interopRequireDefault(_DataSet);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var GLCsv = function () {
-    function GLCsv() {
-        _classCallCheck(this, GLCsv);
+var Csv = function () {
+    function Csv() {
+        _classCallCheck(this, Csv);
     }
 
-    _createClass(GLCsv, [{
+    _createClass(Csv, [{
         key: "CSVToArray",
         value: function CSVToArray(strData, strDelimiter) {
             strDelimiter = strDelimiter || ",";
@@ -1474,14 +1435,14 @@ var GLCsv = function () {
                 }
                 data.push(item);
             }
-            return new _GLDataSet2.default(data);
+            return new _DataSet2.default(data);
         }
     }]);
 
-    return GLCsv;
+    return Csv;
 }();
 
-exports.default = GL.GMVI.Csv = GLCsv;
+exports.default = GMVI.Csv = Csv;
 
 /***/ }),
 /* 14 */
@@ -1498,20 +1459,20 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * Created by Administrator on 2016/11/26.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _GLDataSet = __webpack_require__(4);
+var _DataSet = __webpack_require__(4);
 
-var _GLDataSet2 = _interopRequireDefault(_GLDataSet);
+var _DataSet2 = _interopRequireDefault(_DataSet);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var GLGeoJson = function () {
-    function GLGeoJson() {
-        _classCallCheck(this, GLGeoJson);
+var GeoJson = function () {
+    function GeoJson() {
+        _classCallCheck(this, GeoJson);
     }
 
-    _createClass(GLGeoJson, [{
+    _createClass(GeoJson, [{
         key: "getDataSet",
         value: function getDataSet(geoJson) {
 
@@ -1528,214 +1489,17 @@ var GLGeoJson = function () {
                 item.geometry = geometry;
                 data.push(item);
             }
-            return new _GLDataSet2.default(data);
+            return new _DataSet2.default(data);
         }
     }]);
 
-    return GLGeoJson;
+    return GeoJson;
 }();
 
-exports.default = GL.GMVI.GeoJson = new GLGeoJson();
+exports.default = GMVI.GeoJson = new GeoJson();
 
 /***/ }),
 /* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Created by Blue on 2017/2/21.
- */
-GL.GMVI.ClusterUtil = {
-    cluster: function cluster(data, zoom, maxClusterLv, minx, miny, maxx, maxy, width, height) {
-        // console.log('cluster...');
-
-        var gridClusters = new GL.GMVI.ClusterUtil.Grid.GridCell([minx, miny, maxx, maxy], [width, height]);
-        var ungridClusters = [];
-        this.filter(data, minx, maxx, miny, maxy, gridClusters, ungridClusters, zoom < maxClusterLv);
-        var cluster = this.merge(ungridClusters, gridClusters);
-        gridClusters = null;
-        var object = { discrete: ungridClusters, cluster: cluster };
-        return object;
-    },
-
-    filter: function filter(data, minx, maxx, miny, maxy, gridClusters, ungridClusters, iscluster) {
-        // var gridmsg = 'grid cluster cost';
-        // console.time(gridmsg);
-
-        var i = 0,
-            len = data.length;
-        for (; i < len; i++) {
-            var lng = data[i][0];
-            var lat = data[i][1];
-            var num = data[i][2];
-            var obj = data[i][3];
-            if (lng < minx || lng > maxx || lat < miny || lat > maxy) continue;
-
-            if (!iscluster) {
-                ungridClusters.push([lng, lat, num, obj]);
-                continue;
-            }
-            gridClusters.add(lng, lat, num, obj);
-        }
-        // console.timeEnd(gridmsg);
-    },
-
-    merge: function merge(ungridClusters, gridClusters) {
-        // var gridmsg = 'merge cluster cost';
-        // console.time(gridmsg);
-
-        var grid = gridClusters.grid;
-        var resultIds = [];
-        for (var id in grid) {
-            if (grid[id]._calculated === 1) continue;
-            grid[id]._calculated = 1;
-
-            var rc = id.split('-');
-            var row = rc[0];
-            var col = rc[1];
-            var center = grid[id].center;
-
-            var vminx = center[0] - gridClusters.perLng / 2,
-                vmaxx = center[0] + gridClusters.perLng / 2;
-            var vminy = center[1] - gridClusters.perLat / 2,
-                vmaxy = center[1] + gridClusters.perLat / 2;
-
-            var mergedId = [id];
-            var nearGridIds = this.getNearGrid(row, col);
-            for (var idx = 0, length = nearGridIds.length; idx < length; idx++) {
-                var gridId = nearGridIds[idx];
-                if (grid[gridId] === undefined) continue;
-                if (grid[gridId]._calculated) continue;
-
-                var center2 = grid[gridId].center;
-                if (center2[0] > vminx && center2[0] < vmaxx && center2[1] > vminy && center2[1] < vmaxy) {
-                    grid[gridId]._calculated = 1;
-                    mergedId.push(gridId);
-                }
-            }
-            resultIds.push(mergedId);
-        }
-
-        var resultGirdClusters = {};
-        for (var i = 0, len = resultIds.length; i < len; i++) {
-            var mids = resultIds[i];
-            var rid = mids.join('-');
-            resultGirdClusters[rid] = { count: 0, item: [], center: null };
-
-            for (var j = 0, len2 = mids.length; j < len2; j++) {
-                var mid = mids[j];
-                resultGirdClusters[rid].count += grid[mid].count;
-                resultGirdClusters[rid].item = resultGirdClusters[rid].item.concat(grid[mid].item);
-                if (resultGirdClusters[rid].center == null) {
-                    resultGirdClusters[rid].center = grid[mid].center;
-                    continue;
-                }
-                var lng = (resultGirdClusters[rid].center[0] + grid[mid].center[0]) / 2;
-                var lat = (resultGirdClusters[rid].center[1] + grid[mid].center[1]) / 2;
-                resultGirdClusters[rid].center = [lng, lat];
-            }
-        }
-
-        for (var fid in resultGirdClusters) {
-            if (resultGirdClusters[fid].count < 3) {
-                ungridClusters = ungridClusters.concat(resultGirdClusters[fid].item);
-                delete resultGirdClusters[fid];
-            }
-        }
-
-        // console.timeEnd(gridmsg);
-        return resultGirdClusters;
-    },
-
-    getNearGrid: function getNearGrid(row, col) {
-        var topGridId1 = row + 1 + '-' + (col - 1);
-        var topGridId2 = row + 1 + '-' + col;
-        var topGridId3 = row + 1 + '-' + (col + 1);
-        var bottomGridId1 = row - 1 + '-' + (col - 1);
-        var bottomGridId2 = row - 1 + '-' + col;
-        var bottomGridId3 = row - 1 + '-' + (col + 1);
-        var leftGridId = row + '-' + (col - 1);
-        var rightGridId = row + '-' + (col + 1);
-        return [topGridId1, topGridId2, topGridId3, bottomGridId1, bottomGridId2, bottomGridId3, leftGridId, rightGridId];
-    }
-};
-
-/**
- * Created by Blue on 2017/2/21.
- */
-
-GL.GMVI.ClusterUtil.Grid = {
-    GridCell: function GridCell(env, wh, cr) {
-        cr = cr || 100;
-        var rowNum = Math.ceil((wh[1] / cr).toFixed(2));
-        var colNum = Math.ceil((wh[0] / cr).toFixed(2));
-
-        this.size = cr;
-        this.minLng = env[0];
-        this.perLng = (env[2] - env[0]) / colNum;
-        this.minLat = env[1];
-        this.perLat = (env[3] - env[1]) / rowNum;
-
-        this.grid = {};
-
-        this.add = function (lng, lat, num) {
-            var row = Math.ceil(((lat - this.minLat) / this.perLat).toFixed(2));
-            var col = Math.ceil(((lng - this.minLng) / this.perLng).toFixed(2));
-
-            var id = row + '-' + col;
-            this.grid[id] = this.grid[id] || { item: [], count: 0, center: [lng, lat] };
-
-            var count = this.grid[id].count + 1 * num;
-            var center = [(this.grid[id].center[0] + lng) / 2, (this.grid[id].center[1] + lat) / 2];
-
-            this.grid[id].count = count;
-            this.grid[id].center = center;
-            this.grid[id].item.push([lng, lat, num]);
-        };
-    }
-
-};
-
-/**
- * Created by Blue on 2017/2/21.
- */
-GL.GMVI.ClusterUtil.Util = {
-    generate: function generate(len) {
-        var num = len;
-        var list = [];
-        var center = [31.30115627, 120.58105869];
-        var msg = 'prepare ' + len + 'w test data cost';
-
-        console.time(msg);
-        for (var i = 0; i < num; i++) {
-            var lng = center[1] + Math.random() * 0.5;
-            var lat = center[0] + Math.random() * 0.5;
-            list.push([lng, lat, parseInt(1 + Math.random() * 100)]);
-        }
-        console.timeEnd(msg);
-        return list;
-    },
-    getScale: function getScale(minLng, maxLng, minLat, maxLat, width, height) {
-        var scaleX = (maxLng - minLng) * 3600 / width;
-        var scaleY = (maxLat - minLat) * 3600 / height;
-        return [scaleX, scaleY];
-    },
-    toPixel: function toPixel(scale, lng, lat, minlng, maxlat) {
-        var x = (lng - minlng) * 3600.0 / scale[0];
-        var y = (maxlat - lat) * 3600.0 / scale[1];
-        return [x, y];
-    },
-    toLnglat: function toLnglat(scale, x, y, minlng, maxlat) {
-        var lng = x * scale[0] / 3600.0 + minlng;
-        var lat = maxlat - y * scale[1] / 3600.0;
-        return [lng, lat];
-    }
-};
-
-/***/ }),
-/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1762,7 +1526,7 @@ var merc = new SphericalMercator({
     size: 256
 });
 
-GL.GMVI.SuperCluster = function (data, zoom, maxClusterLv, minx, miny, maxx, maxy, width, heigh, crsCode) {
+GMVI.SuperCluster = function (data, zoom, maxClusterLv, minx, miny, maxx, maxy, width, heigh, crsCode) {
     if (EPSG3857 === crsCode) return mecatorCluster(data, zoom, maxClusterLv, minx, miny, maxx, maxy, width, heigh);
     return cluster(data, zoom, maxClusterLv, minx, miny, maxx, maxy, width, heigh);
 };
@@ -1777,7 +1541,7 @@ function cluster(data, zoom, maxClusterLv, minx, miny, maxx, maxy, width, heigh)
     for (var i = 0; i < data.length; i++) {
         var element = data[i];
         var geometry = element.geometry;
-        if (geometry.type == GL.GMVI.Geometry.Point) {
+        if (geometry.type == GMVI.Geometry.Point) {
             var coordinates = geometry.coordinates;
             var lng = parseFloat(coordinates[0]),
                 lat = parseFloat(coordinates[1]);
@@ -1790,7 +1554,7 @@ function cluster(data, zoom, maxClusterLv, minx, miny, maxx, maxy, width, heigh)
         var unClusterGrid = [];
         rangleData.forEach(function (element) {
             var geometry = element.geometry;
-            if (geometry.type == GL.GMVI.Geometry.Point) {
+            if (geometry.type == GMVI.Geometry.Point) {
                 var coordinates = geometry.coordinates;
                 var lng = parseFloat(coordinates[0]),
                     lat = parseFloat(coordinates[1]);
@@ -1848,7 +1612,7 @@ function cluster(data, zoom, maxClusterLv, minx, miny, maxx, maxy, width, heigh)
     for (var i = 0; i < rangleData.length; i++) {
         var element = rangleData[i];
         var geometry = element.geometry;
-        if (geometry.type !== GL.GMVI.Geometry.Point) continue;
+        if (geometry.type !== GMVI.Geometry.Point) continue;
         var coordinates = geometry.coordinates;
         var lng = parseFloat(coordinates[0]),
             lat = parseFloat(coordinates[1]);
@@ -1934,7 +1698,7 @@ function getNearGridList(gridList, IdMap, NearGridList, minx, miny, xAverage, yA
                 grid.center = [(lng + lng1) / 2, (lat + lat1) / 2];
                 grid.count = rowGrid.count + colGrid.count;
                 // console.log(grid.count);
-                grid.gridIndex = GL.GMVI.uuid();
+                grid.gridIndex = GMVI.uuid();
                 var ax, ay;
                 if (isMecator) {
                     var mlnglat = merc.forward([lng, lat]);
@@ -1975,7 +1739,7 @@ function mecatorCluster(data, zoom, maxClusterLv, minx, miny, maxx, maxy, width,
 
     data.forEach(function (element) {
         var geometry = element.geometry;
-        if (geometry.type == GL.GMVI.Geometry.Point) {
+        if (geometry.type == GMVI.Geometry.Point) {
             var mercatormeters = geometry.mercatormeters;
             var lng = parseFloat(mercatormeters[0]),
                 lat = parseFloat(mercatormeters[1]);
@@ -1987,7 +1751,7 @@ function mecatorCluster(data, zoom, maxClusterLv, minx, miny, maxx, maxy, width,
         var unClusterGrid = [];
         rangleData.forEach(function (element) {
             var geometry = element.geometry;
-            if (geometry.type == GL.GMVI.Geometry.Point) {
+            if (geometry.type == GMVI.Geometry.Point) {
                 var coordinates = geometry.coordinates;
                 var mercatormeters = geometry.mercatormeters;
                 var lng = parseFloat(coordinates[0]),
@@ -2048,7 +1812,7 @@ function mecatorCluster(data, zoom, maxClusterLv, minx, miny, maxx, maxy, width,
     for (var i = 0; i < rangleData.length; i++) {
         var element = rangleData[i];
         var geometry = element.geometry;
-        if (geometry.type !== GL.GMVI.Geometry.Point) continue;
+        if (geometry.type !== GMVI.Geometry.Point) continue;
         var mercatormeters = geometry.mercatormeters;
         var coordinates = geometry.coordinates;
         var lng = parseFloat(coordinates[0]),
@@ -2117,7 +1881,7 @@ function mecatorCluster(data, zoom, maxClusterLv, minx, miny, maxx, maxy, width,
 }
 
 /***/ }),
-/* 17 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2133,14 +1897,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var cityCenter = { municipalities: [{ n: "北京", g: "116.395645,39.929986|12" }, { n: "上海", g: "121.487899,31.249162|12" }, { n: "天津", g: "117.210813,39.14393|12" }, { n: "重庆", g: "106.530635,29.544606|12" }], provinces: [{ n: "安徽", g: "117.216005,31.859252|8", cities: [{ n: "合肥", g: "117.282699,31.866942|12" }, { n: "安庆", g: "117.058739,30.537898|13" }, { n: "蚌埠", g: "117.35708,32.929499|13" }, { n: "亳州", g: "115.787928,33.871211|13" }, { n: "巢湖", g: "117.88049,31.608733|13" }, { n: "池州", g: "117.494477,30.660019|14" }, { n: "滁州", g: "118.32457,32.317351|13" }, { n: "阜阳", g: "115.820932,32.901211|13" }, { n: "淮北", g: "116.791447,33.960023|13" }, { n: "淮南", g: "117.018639,32.642812|13" }, { n: "黄山", g: "118.29357,29.734435|13" }, { n: "六安", g: "116.505253,31.755558|13" }, { n: "马鞍山", g: "118.515882,31.688528|13" }, { n: "宿州", g: "116.988692,33.636772|13" }, { n: "铜陵", g: "117.819429,30.94093|14" }, { n: "芜湖", g: "118.384108,31.36602|12" }, { n: "宣城", g: "118.752096,30.951642|13" }] }, { n: "福建", g: "117.984943,26.050118|8", cities: [{ n: "福州", g: "119.330221,26.047125|12" }, { n: "龙岩", g: "117.017997,25.078685|13" }, { n: "南平", g: "118.181883,26.643626|13" }, { n: "宁德", g: "119.542082,26.656527|14" }, { n: "莆田", g: "119.077731,25.44845|13" }, { n: "泉州", g: "118.600362,24.901652|12" }, { n: "三明", g: "117.642194,26.270835|14" }, { n: "厦门", g: "118.103886,24.489231|12" }, { n: "漳州", g: "117.676205,24.517065|12" }] }, { n: "甘肃", g: "102.457625,38.103267|6", cities: [{ n: "兰州", g: "103.823305,36.064226|12" }, { n: "白银", g: "104.171241,36.546682|13" }, { n: "定西", g: "104.626638,35.586056|13" }, { n: "甘南州", g: "102.917442,34.992211|14" }, { n: "嘉峪关", g: "98.281635,39.802397|13" }, { n: "金昌", g: "102.208126,38.516072|13" }, { n: "酒泉", g: "98.508415,39.741474|13" }, { n: "临夏州", g: "103.215249,35.598514|13" }, { n: "陇南", g: "104.934573,33.39448|14" }, { n: "平凉", g: "106.688911,35.55011|13" }, { n: "庆阳", g: "107.644227,35.726801|13" }, { n: "天水", g: "105.736932,34.584319|13" }, { n: "武威", g: "102.640147,37.933172|13" }, { n: "张掖", g: "100.459892,38.93932|13" }] }, { n: "广东", g: "113.394818,23.408004|8", cities: [{ n: "广州", g: "113.30765,23.120049|12" }, { n: "潮州", g: "116.630076,23.661812|13" }, { n: "东莞", g: "113.763434,23.043024|12" }, { n: "佛山", g: "113.134026,23.035095|13" }, { n: "河源", g: "114.713721,23.757251|12" }, { n: "惠州", g: "114.410658,23.11354|12" }, { n: "江门", g: "113.078125,22.575117|13" }, { n: "揭阳", g: "116.379501,23.547999|13" }, { n: "茂名", g: "110.931245,21.668226|13" }, { n: "梅州", g: "116.126403,24.304571|13" }, { n: "清远", g: "113.040773,23.698469|13" }, { n: "汕头", g: "116.72865,23.383908|13" }, { n: "汕尾", g: "115.372924,22.778731|14" }, { n: "韶关", g: "113.594461,24.80296|13" }, { n: "深圳", g: "114.025974,22.546054|12" }, { n: "阳江", g: "111.97701,21.871517|14" }, { n: "云浮", g: "112.050946,22.937976|13" }, { n: "湛江", g: "110.365067,21.257463|13" }, { n: "肇庆", g: "112.479653,23.078663|13" }, { n: "中山", g: "113.42206,22.545178|12" }, { n: "珠海", g: "113.562447,22.256915|13" }] }, { n: "广西", g: "108.924274,23.552255|7", cities: [{ n: "南宁", g: "108.297234,22.806493|12" }, { n: "百色", g: "106.631821,23.901512|13" }, { n: "北海", g: "109.122628,21.472718|13" }, { n: "崇左", g: "107.357322,22.415455|14" }, { n: "防城港", g: "108.351791,21.617398|15" }, { n: "桂林", g: "110.26092,25.262901|12" }, { n: "贵港", g: "109.613708,23.103373|13" }, { n: "河池", g: "108.069948,24.699521|14" }, { n: "贺州", g: "111.552594,24.411054|14" }, { n: "来宾", g: "109.231817,23.741166|14" }, { n: "柳州", g: "109.422402,24.329053|12" }, { n: "钦州", g: "108.638798,21.97335|13" }, { n: "梧州", g: "111.305472,23.485395|13" }, { n: "玉林", g: "110.151676,22.643974|14" }] }, { n: "贵州", g: "106.734996,26.902826|8", cities: [{ n: "贵阳", g: "106.709177,26.629907|12" }, { n: "安顺", g: "105.92827,26.228595|13" }, { n: "毕节地区", g: "105.300492,27.302612|14" }, { n: "六盘水", g: "104.852087,26.591866|13" }, { n: "铜仁地区", g: "109.196161,27.726271|14" }, { n: "遵义", g: "106.93126,27.699961|13" }, { n: "黔西南州", g: "104.900558,25.095148|11" }, { n: "黔东南州", g: "107.985353,26.583992|11" }, { n: "黔南州", g: "107.523205,26.264536|11" }] }, { n: "海南", g: "109.733755,19.180501|9", cities: [{ n: "海口", g: "110.330802,20.022071|13" }, { n: "白沙", g: "109.358586,19.216056|12" }, { n: "保亭", g: "109.656113,18.597592|12" }, { n: "昌江", g: "109.0113,19.222483|12" }, { n: "儋州", g: "109.413973,19.571153|13" }, { n: "澄迈", g: "109.996736,19.693135|13" }, { n: "东方", g: "108.85101,18.998161|13" }, { n: "定安", g: "110.32009,19.490991|13" }, { n: "琼海", g: "110.414359,19.21483|13" }, { n: "琼中", g: "109.861849,19.039771|12" }, { n: "乐东", g: "109.062698,18.658614|12" }, { n: "临高", g: "109.724101,19.805922|13" }, { n: "陵水", g: "109.948661,18.575985|12" }, { n: "三亚", g: "109.522771,18.257776|12" }, { n: "屯昌", g: "110.063364,19.347749|13" }, { n: "万宁", g: "110.292505,18.839886|13" }, { n: "文昌", g: "110.780909,19.750947|13" }, { n: "五指山", g: "109.51775,18.831306|13" }] }, { n: "河北", g: "115.661434,38.61384|7", cities: [{ n: "石家庄", g: "114.522082,38.048958|12" }, { n: "保定", g: "115.49481,38.886565|13" }, { n: "沧州", g: "116.863806,38.297615|13" }, { n: "承德", g: "117.933822,40.992521|14" }, { n: "邯郸", g: "114.482694,36.609308|13" }, { n: "衡水", g: "115.686229,37.746929|13" }, { n: "廊坊", g: "116.703602,39.518611|13" }, { n: "秦皇岛", g: "119.604368,39.945462|12" }, { n: "唐山", g: "118.183451,39.650531|13" }, { n: "邢台", g: "114.520487,37.069531|13" }, { n: "张家口", g: "114.893782,40.811188|13" }] }, { n: "河南", g: "113.486804,34.157184|7", cities: [{ n: "郑州", g: "113.649644,34.75661|12" }, { n: "安阳", g: "114.351807,36.110267|12" }, { n: "鹤壁", g: "114.29777,35.755426|13" }, { n: "焦作", g: "113.211836,35.234608|13" }, { n: "开封", g: "114.351642,34.801854|13" }, { n: "洛阳", g: "112.447525,34.657368|12" }, { n: "漯河", g: "114.046061,33.576279|13" }, { n: "南阳", g: "112.542842,33.01142|13" }, { n: "平顶山", g: "113.300849,33.745301|13" }, { n: "濮阳", g: "115.026627,35.753298|12" }, { n: "三门峡", g: "111.181262,34.78332|13" }, { n: "商丘", g: "115.641886,34.438589|13" }, { n: "新乡", g: "113.91269,35.307258|13" }, { n: "信阳", g: "114.085491,32.128582|13" }, { n: "许昌", g: "113.835312,34.02674|13" }, { n: "周口", g: "114.654102,33.623741|13" }, { n: "驻马店", g: "114.049154,32.983158|13" }] }, { n: "黑龙江", g: "128.047414,47.356592|6", cities: [{ n: "哈尔滨", g: "126.657717,45.773225|12" }, { n: "大庆", g: "125.02184,46.596709|12" }, { n: "大兴安岭地区", g: "124.196104,51.991789|10" }, { n: "鹤岗", g: "130.292472,47.338666|13" }, { n: "黑河", g: "127.50083,50.25069|14" }, { n: "鸡西", g: "130.941767,45.32154|13" }, { n: "佳木斯", g: "130.284735,46.81378|12" }, { n: "牡丹江", g: "129.608035,44.588521|13" }, { n: "七台河", g: "131.019048,45.775005|14" }, { n: "齐齐哈尔", g: "123.987289,47.3477|13" }, { n: "双鸭山", g: "131.171402,46.655102|13" }, { n: "绥化", g: "126.989095,46.646064|13" }, { n: "伊春", g: "128.910766,47.734685|14" }] }, { n: "湖北", g: "112.410562,31.209316|8", cities: [{ n: "武汉", g: "114.3162,30.581084|12" }, { n: "鄂州", g: "114.895594,30.384439|14" }, { n: "恩施", g: "109.517433,30.308978|14" }, { n: "黄冈", g: "114.906618,30.446109|14" }, { n: "黄石", g: "115.050683,30.216127|13" }, { n: "荆门", g: "112.21733,31.042611|13" }, { n: "荆州", g: "112.241866,30.332591|12" }, { n: "潜江", g: "112.768768,30.343116|13" }, { n: "神农架林区", g: "110.487231,31.595768|13" }, { n: "十堰", g: "110.801229,32.636994|13" }, { n: "随州", g: "113.379358,31.717858|13" }, { n: "天门", g: "113.12623,30.649047|13" }, { n: "仙桃", g: "113.387448,30.293966|13" }, { n: "咸宁", g: "114.300061,29.880657|13" }, { n: "襄阳", g: "112.176326,32.094934|12" }, { n: "孝感", g: "113.935734,30.927955|13" }, { n: "宜昌", g: "111.310981,30.732758|13" }] }, { n: "湖南", g: "111.720664,27.695864|7", cities: [{ n: "长沙", g: "112.979353,28.213478|12" }, { n: "常德", g: "111.653718,29.012149|12" }, { n: "郴州", g: "113.037704,25.782264|13" }, { n: "衡阳", g: "112.583819,26.898164|13" }, { n: "怀化", g: "109.986959,27.557483|13" }, { n: "娄底", g: "111.996396,27.741073|13" }, { n: "邵阳", g: "111.461525,27.236811|13" }, { n: "湘潭", g: "112.935556,27.835095|13" }, { n: "湘西州", g: "109.745746,28.317951|14" }, { n: "益阳", g: "112.366547,28.588088|13" }, { n: "永州", g: "111.614648,26.435972|13" }, { n: "岳阳", g: "113.146196,29.378007|13" }, { n: "张家界", g: "110.48162,29.124889|13" }, { n: "株洲", g: "113.131695,27.827433|13" }] }, { n: "江苏", g: "119.368489,33.013797|8", cities: [{ n: "南京", g: "118.778074,32.057236|12" }, { n: "常州", g: "119.981861,31.771397|12" }, { n: "淮安", g: "119.030186,33.606513|12" }, { n: "连云港", g: "119.173872,34.601549|12" }, { n: "南通", g: "120.873801,32.014665|12" }, { n: "苏州", g: "120.619907,31.317987|12" }, { n: "宿迁", g: "118.296893,33.95205|13" }, { n: "泰州", g: "119.919606,32.476053|13" }, { n: "无锡", g: "120.305456,31.570037|12" }, { n: "徐州", g: "117.188107,34.271553|12" }, { n: "盐城", g: "120.148872,33.379862|12" }, { n: "扬州", g: "119.427778,32.408505|13" }, { n: "镇江", g: "119.455835,32.204409|13" }] }, { n: "江西", g: "115.676082,27.757258|7", cities: [{ n: "南昌", g: "115.893528,28.689578|12" }, { n: "抚州", g: "116.360919,27.954545|13" }, { n: "赣州", g: "114.935909,25.845296|13" }, { n: "吉安", g: "114.992039,27.113848|13" }, { n: "景德镇", g: "117.186523,29.303563|12" }, { n: "九江", g: "115.999848,29.71964|13" }, { n: "萍乡", g: "113.859917,27.639544|13" }, { n: "上饶", g: "117.955464,28.457623|13" }, { n: "新余", g: "114.947117,27.822322|13" }, { n: "宜春", g: "114.400039,27.81113|13" }, { n: "鹰潭", g: "117.03545,28.24131|13" }] }, { n: "吉林", g: "126.262876,43.678846|7", cities: [{ n: "长春", g: "125.313642,43.898338|12" }, { n: "白城", g: "122.840777,45.621086|13" }, { n: "白山", g: "126.435798,41.945859|13" }, { n: "吉林市", g: "126.564544,43.871988|12" }, { n: "辽源", g: "125.133686,42.923303|13" }, { n: "四平", g: "124.391382,43.175525|12" }, { n: "松原", g: "124.832995,45.136049|13" }, { n: "通化", g: "125.94265,41.736397|13" }, { n: "延边", g: "129.485902,42.896414|13" }] }, { n: "辽宁", g: "122.753592,41.6216|8", cities: [{ n: "沈阳", g: "123.432791,41.808645|12" }, { n: "鞍山", g: "123.007763,41.118744|13" }, { n: "本溪", g: "123.778062,41.325838|12" }, { n: "朝阳", g: "120.446163,41.571828|13" }, { n: "大连", g: "121.593478,38.94871|12" }, { n: "丹东", g: "124.338543,40.129023|12" }, { n: "抚顺", g: "123.92982,41.877304|12" }, { n: "阜新", g: "121.660822,42.01925|14" }, { n: "葫芦岛", g: "120.860758,40.74303|13" }, { n: "锦州", g: "121.147749,41.130879|13" }, { n: "辽阳", g: "123.172451,41.273339|14" }, { n: "盘锦", g: "122.073228,41.141248|13" }, { n: "铁岭", g: "123.85485,42.299757|13" }, { n: "营口", g: "122.233391,40.668651|13" }] }, { n: "内蒙古", g: "114.415868,43.468238|5", cities: [{ n: "呼和浩特", g: "111.660351,40.828319|12" }, { n: "阿拉善盟", g: "105.695683,38.843075|14" }, { n: "包头", g: "109.846239,40.647119|12" }, { n: "巴彦淖尔", g: "107.423807,40.76918|12" }, { n: "赤峰", g: "118.930761,42.297112|12" }, { n: "鄂尔多斯", g: "109.993706,39.81649|12" }, { n: "呼伦贝尔", g: "119.760822,49.201636|12" }, { n: "通辽", g: "122.260363,43.633756|12" }, { n: "乌海", g: "106.831999,39.683177|13" }, { n: "乌兰察布", g: "113.112846,41.022363|12" }, { n: "锡林郭勒盟", g: "116.02734,43.939705|11" }, { n: "兴安盟", g: "122.048167,46.083757|11" }] }, { n: "宁夏", g: "106.155481,37.321323|8", cities: [{ n: "银川", g: "106.206479,38.502621|12" }, { n: "固原", g: "106.285268,36.021523|13" }, { n: "石嘴山", g: "106.379337,39.020223|13" }, { n: "吴忠", g: "106.208254,37.993561|14" }, { n: "中卫", g: "105.196754,37.521124|14" }] }, { n: "青海", g: "96.202544,35.499761|7", cities: [{ n: "西宁", g: "101.767921,36.640739|12" }, { n: "果洛州", g: "100.223723,34.480485|11" }, { n: "海东地区", g: "102.085207,36.51761|11" }, { n: "海北州", g: "100.879802,36.960654|11" }, { n: "海南州", g: "100.624066,36.284364|11" }, { n: "海西州", g: "97.342625,37.373799|11" }, { n: "黄南州", g: "102.0076,35.522852|11" }, { n: "玉树州", g: "97.013316,33.00624|14" }] }, { n: "山东", g: "118.527663,36.09929|8", cities: [{ n: "济南", g: "117.024967,36.682785|12" }, { n: "滨州", g: "117.968292,37.405314|12" }, { n: "东营", g: "118.583926,37.487121|12" }, { n: "德州", g: "116.328161,37.460826|12" }, { n: "菏泽", g: "115.46336,35.26244|13" }, { n: "济宁", g: "116.600798,35.402122|13" }, { n: "莱芜", g: "117.684667,36.233654|13" }, { n: "聊城", g: "115.986869,36.455829|12" }, { n: "临沂", g: "118.340768,35.072409|12" }, { n: "青岛", g: "120.384428,36.105215|12" }, { n: "日照", g: "119.50718,35.420225|12" }, { n: "泰安", g: "117.089415,36.188078|13" }, { n: "威海", g: "122.093958,37.528787|13" }, { n: "潍坊", g: "119.142634,36.716115|12" }, { n: "烟台", g: "121.309555,37.536562|12" }, { n: "枣庄", g: "117.279305,34.807883|13" }, { n: "淄博", g: "118.059134,36.804685|12" }] }, { n: "山西", g: "112.515496,37.866566|7", cities: [{ n: "太原", g: "112.550864,37.890277|12" }, { n: "长治", g: "113.120292,36.201664|12" }, { n: "大同", g: "113.290509,40.113744|12" }, { n: "晋城", g: "112.867333,35.499834|13" }, { n: "晋中", g: "112.738514,37.693362|13" }, { n: "临汾", g: "111.538788,36.099745|13" }, { n: "吕梁", g: "111.143157,37.527316|14" }, { n: "朔州", g: "112.479928,39.337672|13" }, { n: "忻州", g: "112.727939,38.461031|12" }, { n: "阳泉", g: "113.569238,37.869529|13" }, { n: "运城", g: "111.006854,35.038859|13" }] }, { n: "陕西", g: "109.503789,35.860026|7", cities: [{ n: "西安", g: "108.953098,34.2778|12" }, { n: "安康", g: "109.038045,32.70437|13" }, { n: "宝鸡", g: "107.170645,34.364081|12" }, { n: "汉中", g: "107.045478,33.081569|13" }, { n: "商洛", g: "109.934208,33.873907|13" }, { n: "铜川", g: "108.968067,34.908368|13" }, { n: "渭南", g: "109.483933,34.502358|13" }, { n: "咸阳", g: "108.707509,34.345373|13" }, { n: "延安", g: "109.50051,36.60332|13" }, { n: "榆林", g: "109.745926,38.279439|12" }] }, { n: "四川", g: "102.89916,30.367481|7", cities: [{ n: "成都", g: "104.067923,30.679943|12" }, { n: "阿坝州", g: "102.228565,31.905763|15" }, { n: "巴中", g: "106.757916,31.869189|14" }, { n: "达州", g: "107.494973,31.214199|14" }, { n: "德阳", g: "104.402398,31.13114|13" }, { n: "甘孜州", g: "101.969232,30.055144|15" }, { n: "广安", g: "106.63572,30.463984|13" }, { n: "广元", g: "105.819687,32.44104|13" }, { n: "乐山", g: "103.760824,29.600958|13" }, { n: "凉山州", g: "102.259591,27.892393|14" }, { n: "泸州", g: "105.44397,28.89593|14" }, { n: "南充", g: "106.105554,30.800965|13" }, { n: "眉山", g: "103.84143,30.061115|13" }, { n: "绵阳", g: "104.705519,31.504701|12" }, { n: "内江", g: "105.073056,29.599462|13" }, { n: "攀枝花", g: "101.722423,26.587571|14" }, { n: "遂宁", g: "105.564888,30.557491|12" }, { n: "雅安", g: "103.009356,29.999716|13" }, { n: "宜宾", g: "104.633019,28.769675|13" }, { n: "资阳", g: "104.63593,30.132191|13" }, { n: "自贡", g: "104.776071,29.359157|13" }] }, { n: "西藏", g: "89.137982,31.367315|6", cities: [{ n: "拉萨", g: "91.111891,29.662557|13" }, { n: "阿里地区", g: "81.107669,30.404557|11" }, { n: "昌都地区", g: "97.185582,31.140576|15" }, { n: "林芝地区", g: "94.349985,29.666941|11" }, { n: "那曲地区", g: "92.067018,31.48068|14" }, { n: "日喀则地区", g: "88.891486,29.269023|14" }, { n: "山南地区", g: "91.750644,29.229027|11" }] }, { n: "新疆", g: "85.614899,42.127001|6", cities: [{ n: "乌鲁木齐", g: "87.564988,43.84038|12" }, { n: "阿拉尔", g: "81.291737,40.61568|13" }, { n: "阿克苏地区", g: "80.269846,41.171731|12" }, { n: "阿勒泰地区", g: "88.137915,47.839744|13" }, { n: "巴音郭楞", g: "86.121688,41.771362|12" }, { n: "博尔塔拉州", g: "82.052436,44.913651|11" }, { n: "昌吉州", g: "87.296038,44.007058|13" }, { n: "哈密地区", g: "93.528355,42.858596|13" }, { n: "和田地区", g: "79.930239,37.116774|13" }, { n: "喀什地区", g: "75.992973,39.470627|12" }, { n: "克拉玛依", g: "84.88118,45.594331|13" }, { n: "克孜勒苏州", g: "76.137564,39.750346|11" }, { n: "石河子", g: "86.041865,44.308259|13" }, { n: "塔城地区", g: "82.974881,46.758684|12" }, { n: "图木舒克", g: "79.198155,39.889223|13" }, { n: "吐鲁番地区", g: "89.181595,42.96047|13" }, { n: "五家渠", g: "87.565449,44.368899|13" }, { n: "伊犁州", g: "81.297854,43.922248|11" }] }, { n: "云南", g: "101.592952,24.864213|7", cities: [{ n: "昆明", g: "102.714601,25.049153|12" }, { n: "保山", g: "99.177996,25.120489|13" }, { n: "楚雄州", g: "101.529382,25.066356|13" }, { n: "大理州", g: "100.223675,25.5969|14" }, { n: "德宏州", g: "98.589434,24.44124|14" }, { n: "迪庆州", g: "99.713682,27.831029|14" }, { n: "红河州", g: "103.384065,23.367718|11" }, { n: "丽江", g: "100.229628,26.875351|13" }, { n: "临沧", g: "100.092613,23.887806|14" }, { n: "怒江州", g: "98.859932,25.860677|14" }, { n: "普洱", g: "100.980058,22.788778|14" }, { n: "曲靖", g: "103.782539,25.520758|12" }, { n: "昭通", g: "103.725021,27.340633|13" }, { n: "文山", g: "104.089112,23.401781|14" }, { n: "西双版纳", g: "100.803038,22.009433|13" }, { n: "玉溪", g: "102.545068,24.370447|13" }] }, { n: "浙江", g: "119.957202,29.159494|8", cities: [{ n: "杭州", g: "120.219375,30.259244|12" }, { n: "湖州", g: "120.137243,30.877925|12" }, { n: "嘉兴", g: "120.760428,30.773992|13" }, { n: "金华", g: "119.652576,29.102899|12" }, { n: "丽水", g: "119.929576,28.4563|13" }, { n: "宁波", g: "121.579006,29.885259|12" }, { n: "衢州", g: "118.875842,28.95691|12" }, { n: "绍兴", g: "120.592467,30.002365|13" }, { n: "台州", g: "121.440613,28.668283|13" }, { n: "温州", g: "120.690635,28.002838|12" }, { n: "舟山", g: "122.169872,30.03601|13" }] }], other: [{ n: "香港", g: "114.186124,22.293586|11" }, { n: "澳门", g: "113.557519,22.204118|13" }, { n: "台湾", g: "120.961454,23.80406|8" }] };
 
-var GLCityCenterUtil = function () {
-    function GLCityCenterUtil() {
-        _classCallCheck(this, GLCityCenterUtil);
+var CityCenterUtil = function () {
+    function CityCenterUtil() {
+        _classCallCheck(this, CityCenterUtil);
 
         this.cityCenter = cityCenter;
     }
 
-    _createClass(GLCityCenterUtil, [{
+    _createClass(CityCenterUtil, [{
         key: "getCenter",
         value: function getCenter(g) {
             var item = g.split("|");
@@ -2180,13 +1944,13 @@ var GLCityCenterUtil = function () {
         }
     }]);
 
-    return GLCityCenterUtil;
+    return CityCenterUtil;
 }();
 
-exports.default = GL.GMVI.CityCenterUtil = new GLCityCenterUtil();
+exports.default = GMVI.CityCenterUtil = new CityCenterUtil();
 
 /***/ }),
-/* 18 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2602,10 +2366,10 @@ var ForceEdgeBundling = function ForceEdgeBundling() {
     return forcebundle;
 };
 
-exports.default = GL.GMVI.ForceEdgeBundlingUtil = ForceEdgeBundling;
+exports.default = GMVI.ForceEdgeBundlingUtil = ForceEdgeBundling;
 
 /***/ }),
-/* 19 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2720,81 +2484,10 @@ var curve = {
     getPoints: getCurvePoints
 };
 
-exports.default = GL.GMVI.CurveUtil = curve;
+exports.default = GMVI.CurveUtil = curve;
 
 /***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _os = __webpack_require__(21);
-
-GL.GMVI.Extend = function (dest, args) {
-   for (var key in args) {
-      dest[key] = args[key];
-   }
-   return dest;
-};
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports) {
-
-exports.endianness = function () { return 'LE' };
-
-exports.hostname = function () {
-    if (typeof location !== 'undefined') {
-        return location.hostname
-    }
-    else return '';
-};
-
-exports.loadavg = function () { return [] };
-
-exports.uptime = function () { return 0 };
-
-exports.freemem = function () {
-    return Number.MAX_VALUE;
-};
-
-exports.totalmem = function () {
-    return Number.MAX_VALUE;
-};
-
-exports.cpus = function () { return [] };
-
-exports.type = function () { return 'Browser' };
-
-exports.release = function () {
-    if (typeof navigator !== 'undefined') {
-        return navigator.appVersion;
-    }
-    return '';
-};
-
-exports.networkInterfaces
-= exports.getNetworkInterfaces
-= function () { return {} };
-
-exports.arch = function () { return 'javascript' };
-
-exports.platform = function () { return 'browser' };
-
-exports.tmpdir = exports.tmpDir = function () {
-    return '/tmp';
-};
-
-exports.EOL = '\n';
-
-exports.homedir = function () {
-	return '/'
-};
-
-
-/***/ }),
-/* 22 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2804,91 +2497,91 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _GLSimplePath = __webpack_require__(5);
+var _SimplePath = __webpack_require__(5);
 
-var _GLSimplePath2 = _interopRequireDefault(_GLSimplePath);
+var _SimplePath2 = _interopRequireDefault(_SimplePath);
 
-var _Animator = __webpack_require__(23);
+var _Animator = __webpack_require__(20);
 
 var _Animator2 = _interopRequireDefault(_Animator);
 
-var _GLCategory = __webpack_require__(24);
+var _Category = __webpack_require__(21);
 
-var _GLCategory2 = _interopRequireDefault(_GLCategory);
+var _Category2 = _interopRequireDefault(_Category);
 
-var _GLChoropleth = __webpack_require__(25);
+var _Choropleth = __webpack_require__(22);
 
-var _GLChoropleth2 = _interopRequireDefault(_GLChoropleth);
+var _Choropleth2 = _interopRequireDefault(_Choropleth);
 
-var _GLIntensity = __webpack_require__(1);
+var _Intensity = __webpack_require__(1);
 
-var _GLIntensity2 = _interopRequireDefault(_GLIntensity);
+var _Intensity2 = _interopRequireDefault(_Intensity);
 
-var _GLCanvasArrow = __webpack_require__(26);
+var _CanvasArrow = __webpack_require__(23);
 
-var _GLCanvasArrow2 = _interopRequireDefault(_GLCanvasArrow);
+var _CanvasArrow2 = _interopRequireDefault(_CanvasArrow);
 
-var _GLCanvasCluster = __webpack_require__(27);
+var _CanvasCluster = __webpack_require__(24);
 
-var _GLCanvasCluster2 = _interopRequireDefault(_GLCanvasCluster);
+var _CanvasCluster2 = _interopRequireDefault(_CanvasCluster);
 
-var _GLCanvasEffect = __webpack_require__(28);
+var _CanvasEffect = __webpack_require__(25);
 
-var _GLCanvasEffect2 = _interopRequireDefault(_GLCanvasEffect);
+var _CanvasEffect2 = _interopRequireDefault(_CanvasEffect);
 
-var _GLCanvasGrid = __webpack_require__(29);
+var _CanvasGrid = __webpack_require__(26);
 
-var _GLCanvasGrid2 = _interopRequireDefault(_GLCanvasGrid);
+var _CanvasGrid2 = _interopRequireDefault(_CanvasGrid);
 
-var _GLCanvasHeat = __webpack_require__(30);
+var _CanvasHeat = __webpack_require__(27);
 
-var _GLCanvasHeat2 = _interopRequireDefault(_GLCanvasHeat);
+var _CanvasHeat2 = _interopRequireDefault(_CanvasHeat);
 
-var _GLCanvasHoneycomb = __webpack_require__(32);
+var _CanvasHoneycomb = __webpack_require__(29);
 
-var _GLCanvasHoneycomb2 = _interopRequireDefault(_GLCanvasHoneycomb);
+var _CanvasHoneycomb2 = _interopRequireDefault(_CanvasHoneycomb);
 
-var _GLCanvasIcon = __webpack_require__(33);
+var _CanvasIcon = __webpack_require__(30);
 
-var _GLCanvasIcon2 = _interopRequireDefault(_GLCanvasIcon);
+var _CanvasIcon2 = _interopRequireDefault(_CanvasIcon);
 
-var _GLCanvasMigrate = __webpack_require__(34);
+var _CanvasMigrate = __webpack_require__(31);
 
-var _GLCanvasMigrate2 = _interopRequireDefault(_GLCanvasMigrate);
+var _CanvasMigrate2 = _interopRequireDefault(_CanvasMigrate);
 
-var _GLCanvasMigrateLines = __webpack_require__(36);
+var _CanvasMigrateLines = __webpack_require__(33);
 
-var _GLCanvasMigrateLines2 = _interopRequireDefault(_GLCanvasMigrateLines);
+var _CanvasMigrateLines2 = _interopRequireDefault(_CanvasMigrateLines);
 
-var _GLCanvasScatter = __webpack_require__(38);
+var _CanvasScatter = __webpack_require__(35);
 
-var _GLCanvasScatter2 = _interopRequireDefault(_GLCanvasScatter);
+var _CanvasScatter2 = _interopRequireDefault(_CanvasScatter);
 
-var _GLCanvasSimple = __webpack_require__(39);
+var _CanvasSimple = __webpack_require__(36);
 
-var _GLCanvasSimple2 = _interopRequireDefault(_GLCanvasSimple);
+var _CanvasSimple2 = _interopRequireDefault(_CanvasSimple);
 
-var _GLCanvasStar = __webpack_require__(40);
+var _CanvasStar = __webpack_require__(37);
 
-var _GLCanvasStar2 = _interopRequireDefault(_GLCanvasStar);
+var _CanvasStar2 = _interopRequireDefault(_CanvasStar);
 
-var _GLCanvasTagCloud = __webpack_require__(41);
+var _CanvasTagCloud = __webpack_require__(38);
 
-var _GLCanvasTagCloud2 = _interopRequireDefault(_GLCanvasTagCloud);
+var _CanvasTagCloud2 = _interopRequireDefault(_CanvasTagCloud);
 
-var _GLCanvasText = __webpack_require__(42);
+var _CanvasText = __webpack_require__(39);
 
-var _GLCanvasText2 = _interopRequireDefault(_GLCanvasText);
+var _CanvasText2 = _interopRequireDefault(_CanvasText);
 
-var _GLCanvasWaterBubble = __webpack_require__(43);
+var _CanvasWaterBubble = __webpack_require__(40);
 
-var _GLCanvasWaterBubble2 = _interopRequireDefault(_GLCanvasWaterBubble);
+var _CanvasWaterBubble2 = _interopRequireDefault(_CanvasWaterBubble);
 
-var _GLCanvasRadial = __webpack_require__(44);
+var _CanvasRadial = __webpack_require__(41);
 
-var _GLCanvasRadial2 = _interopRequireDefault(_GLCanvasRadial);
+var _CanvasRadial2 = _interopRequireDefault(_CanvasRadial);
 
-var _Circle = __webpack_require__(45);
+var _Circle = __webpack_require__(42);
 
 var _Circle2 = _interopRequireDefault(_Circle);
 
@@ -2918,7 +2611,7 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
     function GMVICanvasLayer(id, dataSet, options) {
         _classCallCheck(this, GMVICanvasLayer);
 
-        if (!dataSet instanceof GL.GMVI.DataSet) {
+        if (!dataSet instanceof GMVI.DataSet) {
             throw new Error('dataset is error');
         }
 
@@ -3231,7 +2924,7 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
                 raduis = geometry.radius;
                 mercatormeters = newData[i].geometry.mercatormeters;
                 e = newData[i];
-                if (type == GL.GMVI.Geometry.Point || type == GL.GMVI.Geometry.Rectangle) {
+                if (type == GMVI.Geometry.Point || type == GMVI.Geometry.Rectangle) {
                     e.xy = this._lnglatToPixel(coordinates, mercatormeters);
                     if (geometry.width) {
                         e.width = this.lengthAverage * geometry.width;
@@ -3241,7 +2934,7 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
                     }
                     currentViewData.push(e);
                 } else {
-                    if (type == GL.GMVI.Geometry.Circle) {
+                    if (type == GMVI.Geometry.Circle) {
                         var circle = new _Circle2.default(coordinates, raduis);
                         var lnglatArr = circle.toArray();
                         e.xy = this._lnglatToPixel(lnglatArr);
@@ -3257,8 +2950,8 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
                     }
                 }
             }
-            var dataSet = new GL.GMVI.DataSet(currentViewData);
-            if (this.options.draw != GL.GMVI.Cluster) {
+            var dataSet = new GMVI.DataSet(currentViewData);
+            if (this.options.draw != GMVI.Cluster) {
                 if (!this.options.noRender) this.canvasType.draw(this.getContext(), dataSet, this.options, renderer);
                 if (this.options.callback) this.options.callback(dataSet);
             } else {
@@ -3267,7 +2960,7 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
                 for (var i = 0; i < newData.length; i++) {
                     geometry = newData[i].geometry;
                     type = geometry.type;
-                    if (type != GL.GMVI.Geometry.Point) continue;
+                    if (type != GMVI.Geometry.Point) continue;
                     coordinates = geometry.coordinates;
                     var lng = parseFloat(coordinates[0]);
                     var lat = parseFloat(coordinates[1]);
@@ -3291,7 +2984,7 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
                     minx = -180, maxx = 180, miny = -90, maxy = 90;
                 }
                 // minx=-180,maxx=180,miny=-90,maxy=90;
-                var clusterResult = GL.GMVI.SuperCluster(this.data, zoom, maxClusterLv, minx, miny, maxx, maxy, width, height, crsCode);
+                var clusterResult = GMVI.SuperCluster(this.data, zoom, maxClusterLv, minx, miny, maxx, maxy, width, height, crsCode);
                 if (clusterResult) {
                     var unClustersData = [];
                     var unCluster = [];
@@ -3320,7 +3013,7 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
                 }
 
                 //聚合工具对数据进行聚合
-                // var clusterResult=GL.GMVI.ClusterUtil.cluster(_data,zoom,maxClusterLv,minx,miny,maxx,maxy,width,height)
+                // var clusterResult=GMVI.ClusterUtil.cluster(_data,zoom,maxClusterLv,minx,miny,maxx,maxy,width,height)
                 // if(clusterResult) {
                 //     var cluster = clusterResult.cluster;
                 //     var discrete = clusterResult.discrete
@@ -3355,28 +3048,28 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
             var self = this;
             var draw = self.options.draw;
             //以下绘制类型统一的规划到Simple下
-            if (draw == GL.GMVI.Bubble || draw == GL.GMVI.Intensity || draw == GL.GMVI.Category || draw == GL.GMVI.Choropleth || draw == GL.GMVI.Simple || draw == GL.GMVI.Effect) {
+            if (draw == GMVI.Bubble || draw == GMVI.Intensity || draw == GMVI.Category || draw == GMVI.Choropleth || draw == GMVI.Simple || draw == GMVI.Effect) {
                 for (var i = 0; i < data.length; i++) {
                     var item = data[i];
-                    if (draw == GL.GMVI.Bubble) {
+                    if (draw == GMVI.Bubble) {
                         data[i]._size = self.intensity.getSize(item.count);
                     }
-                    if (draw == GL.GMVI.Intensity) {
-                        if (data[i].geometry.type === GL.GMVI.Geometry.LineString || data[i].geometry.type === GL.GMVI.Geometry.Polyline) {
+                    if (draw == GMVI.Intensity) {
+                        if (data[i].geometry.type === GMVI.Geometry.LineString || data[i].geometry.type === GMVI.Geometry.Polyline) {
                             data[i].strokeStyle = self.intensity.getColor(item.count);
                         } else {
                             data[i].fillStyle = self.intensity.getColor(item.count);
                         }
                     }
-                    if (draw == GL.GMVI.Category) {
-                        if (data[i].geometry.type === GL.GMVI.Geometry.LineString || data[i].geometry.type === GL.GMVI.Geometry.Polyline) {
+                    if (draw == GMVI.Category) {
+                        if (data[i].geometry.type === GMVI.Geometry.LineString || data[i].geometry.type === GMVI.Geometry.Polyline) {
                             data[i].strokeStyle = self.category.get(item.count);
                         } else data[i].fillStyle = self.category.get(item.count);
                     }
-                    if (draw == GL.GMVI.Choropleth) {
-                        if (data[i].geometry.type === GL.GMVI.Geometry.LineString || data[i].geometry.type === GL.GMVI.Geometry.Polyline) data[i].strokeStyle = self.choropleth.get(item.count);else data[i].fillStyle = self.choropleth.get(item.count);
+                    if (draw == GMVI.Choropleth) {
+                        if (data[i].geometry.type === GMVI.Geometry.LineString || data[i].geometry.type === GMVI.Geometry.Polyline) data[i].strokeStyle = self.choropleth.get(item.count);else data[i].fillStyle = self.choropleth.get(item.count);
                     }
-                    if (draw == GL.GMVI.Effect) {
+                    if (draw == GMVI.Effect) {
                         data[i].size = self.options.size || 15;
                         data[i]._size = data[i].size * Math.random();
                         data[i].strokeStyle = self.choropleth.get(item.count);
@@ -3420,7 +3113,7 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
                     animator.pause();
                 });
                 // //图层移除，暂停动画
-                // GL.Hub.on(GL.E.CanvasLayerRemove,function () {
+                // Hub.on(E.CanvasLayerRemove,function () {
                 //     animator.stop();
                 // });
                 map.addEventListener('moveend', function () {
@@ -3433,65 +3126,65 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
         value: function _initCanvasType() {
             var canvasType;
             switch (this.options.draw) {
-                case GL.GMVI.Heatmap:
-                    canvasType = new _GLCanvasHeat2.default();
+                case GMVI.Heatmap:
+                    canvasType = new _CanvasHeat2.default();
                     break;
-                case GL.GMVI.Grid:
-                    canvasType = new _GLCanvasGrid2.default();
+                case GMVI.Grid:
+                    canvasType = new _CanvasGrid2.default();
                     break;
-                case GL.GMVI.Honeycomb:
-                    canvasType = new _GLCanvasHoneycomb2.default();
+                case GMVI.Honeycomb:
+                    canvasType = new _CanvasHoneycomb2.default();
                     break;
-                case GL.GMVI.Text:
-                    canvasType = new _GLCanvasText2.default();
+                case GMVI.Text:
+                    canvasType = new _CanvasText2.default();
                     break;
-                case GL.GMVI.Icon:
-                    canvasType = new _GLCanvasIcon2.default();
+                case GMVI.Icon:
+                    canvasType = new _CanvasIcon2.default();
                     break;
-                case GL.GMVI.Cluster:
+                case GMVI.Cluster:
                     // console.log('cluster')
-                    canvasType = new _GLCanvasCluster2.default();
+                    canvasType = new _CanvasCluster2.default();
                     break;
-                case GL.GMVI.Effect:
-                    canvasType = new _GLCanvasEffect2.default();
+                case GMVI.Effect:
+                    canvasType = new _CanvasEffect2.default();
                     break;
-                case GL.GMVI.TagCloud:
-                    canvasType = new _GLCanvasTagCloud2.default();
+                case GMVI.TagCloud:
+                    canvasType = new _CanvasTagCloud2.default();
                     break;
-                case GL.GMVI.Migrate:
-                    canvasType = new _GLCanvasMigrate2.default();
+                case GMVI.Migrate:
+                    canvasType = new _CanvasMigrate2.default();
                     break;
-                case GL.GMVI.Bar:
+                case GMVI.Bar:
                     canvasType = new CanvasBar();
                     break;
-                case GL.GMVI.WaterBubble:
-                    canvasType = new _GLCanvasWaterBubble2.default();
+                case GMVI.WaterBubble:
+                    canvasType = new _CanvasWaterBubble2.default();
                     break;
-                // case GL.GMVI.Radiation:
+                // case GMVI.Radiation:
                 //     canvasType=new CanvasRadiation();
                 //     break;
-                case GL.GMVI.Star:
-                    canvasType = new _GLCanvasStar2.default();
+                case GMVI.Star:
+                    canvasType = new _CanvasStar2.default();
                     break;
-                case GL.GMVI.Scatter:
-                    canvasType = new _GLCanvasScatter2.default();
+                case GMVI.Scatter:
+                    canvasType = new _CanvasScatter2.default();
                     break;
-                case GL.GMVI.MigrateLines:
-                    canvasType = new _GLCanvasMigrateLines2.default();
+                case GMVI.MigrateLines:
+                    canvasType = new _CanvasMigrateLines2.default();
                     break;
-                case GL.GMVI.Arrow:
-                    canvasType = new _GLCanvasArrow2.default();
+                case GMVI.Arrow:
+                    canvasType = new _CanvasArrow2.default();
                     break;
-                case GL.GMVI.WaterBubble:
-                    canvasType = new _GLCanvasWaterBubble2.default();
+                case GMVI.WaterBubble:
+                    canvasType = new _CanvasWaterBubble2.default();
                     break;
-                case GL.GMVI.Radial:
-                    canvasType = new _GLCanvasRadial2.default();
+                case GMVI.Radial:
+                    canvasType = new _CanvasRadial2.default();
                     break;
 
                 default:
                     //simaple
-                    canvasType = new _GLCanvasSimple2.default();
+                    canvasType = new _CanvasSimple2.default();
             }
             this.canvasType = canvasType;
         }
@@ -3503,7 +3196,7 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
             var pixel = map.coordinateToContainerPoint(coordinates);
             pixel.x = Math.ceil(pixel.x);
             pixel.y = Math.ceil(pixel.y);
-            if (this.options.draw == GL.GMVI.Cluster && this.stauts == GL.GMVI.Cluster) {
+            if (this.options.draw == GMVI.Cluster && this.stauts == GMVI.Cluster) {
                 return;
             }
             var canvas = document.createElement('canvas');
@@ -3511,15 +3204,15 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
             canvas.height = this._canvas.height;
             var ctx = canvas.getContext('2d');
             var data = this.data;
-            if (this.options.draw == GL.GMVI.Cluster) data = this.unClustersData;
+            if (this.options.draw == GMVI.Cluster) data = this.unClustersData;
             for (var i = 0; i < data.length; i++) {
                 var type = data[i].geometry.type;
-                if (this.canvasType instanceof _GLCanvasMigrateLines2.default) {
+                if (this.canvasType instanceof _CanvasMigrateLines2.default) {
                     var xy = data[i].xy;
                     for (var j = 0, len = xy.length; j < len - 1; j++) {
                         var _xy = [xy[j], xy[j + 1]];
                         ctx.beginPath();
-                        _GLSimplePath2.default.drawArc(ctx, _xy, this.options);
+                        _SimplePath2.default.drawArc(ctx, _xy, this.options);
                         if (ctx.isPointInStroke(pixel.x, pixel.y)) {
                             data[i].location = e;
                             callback(data[i], e);
@@ -3528,10 +3221,10 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
                     }
                 } else {
                     ctx.beginPath();
-                    _GLSimplePath2.default.draw(ctx, data[i], this.options);
+                    _SimplePath2.default.draw(ctx, data[i], this.options);
                     ctx.restore();
                     var isHit = false;
-                    if (type === GL.GMVI.Geometry.LineString || type === GL.GMVI.Geometry.Polyline) {
+                    if (type === GMVI.Geometry.LineString || type === GMVI.Geometry.Polyline) {
                         isHit = ctx.isPointInStroke(pixel.x, pixel.y);
                     } else {
                         isHit = ctx.isPointInPath(pixel.x, pixel.y);
@@ -3560,16 +3253,16 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
     }, {
         key: "_initOptions",
         value: function _initOptions(options) {
-            this.options = GL.GMVI.Extend(this.options, options);
+            this.options = maptalks.Util.extend({}, this.options, options);
             this.animationOptions = this.options.animation;
             this.isEnabledTime = this.animationOptions && !(this.animationOptions.enabled === false);
-            this.intensity = new _GLIntensity2.default({
+            this.intensity = new _Intensity2.default({
                 maxSize: this.options.maxSize,
                 gradient: this.options.gradient,
                 max: this.options.max
             });
-            this.category = new _GLCategory2.default(this.options.splitList);
-            this.choropleth = new _GLChoropleth2.default(this.options.splitList);
+            this.category = new _Category2.default(this.options.splitList);
+            this.choropleth = new _Choropleth2.default(this.options.splitList);
             this.eventMap = {};
         }
     }, {
@@ -3579,21 +3272,21 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
                 this.animator.stop();
             }
             var canvasType = this.canvasType;
-            if (canvasType instanceof _GLCanvasEffect2.default) {
+            if (canvasType instanceof _CanvasEffect2.default) {
                 if (canvasType.anmimation) {
                     cancelAnimationFrame(canvasType.anmimation);
                     delete canvasType.anmimation;
                     console.log('clear effect animation');
                 }
             }
-            if (canvasType instanceof _GLCanvasMigrate2.default) {
+            if (canvasType instanceof _CanvasMigrate2.default) {
                 if (canvasType.migration) {
                     window.cancelAnimationFrame(canvasType.migration.requestAnimationId);
                     canvasType.migration.started = false;
                     console.log('clear migration animation');
                 }
             }
-            if (canvasType instanceof _GLCanvasMigrateLines2.default) {
+            if (canvasType instanceof _CanvasMigrateLines2.default) {
                 if (canvasType.migration) {
                     window.cancelAnimationFrame(canvasType.migration.requestAnimationId);
                     canvasType.migration.started = false;
@@ -3601,7 +3294,7 @@ var GMVICanvasLayer = function (_maptalks$Layer) {
                 }
             }
 
-            if (canvasType instanceof _GLCanvasScatter2.default) {
+            if (canvasType instanceof _CanvasScatter2.default) {
                 if (canvasType.animation) {
                     window.cancelAnimationFrame(canvasType.animation);
                     // canvasType.migration.started=false;
@@ -3672,10 +3365,10 @@ var GMVICanvasLayerRenderer = function (_maptalks$renderer$Ca) {
 }(maptalks.renderer.CanvasRenderer);
 
 GMVICanvasLayer.registerRenderer('canvas', GMVICanvasLayerRenderer);
-GL.GMVI.CanvasLayer = GMVICanvasLayer;
+GMVI.CanvasLayer = GMVICanvasLayer;
 
 /***/ }),
-/* 23 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3898,7 +3591,7 @@ Animator.prototype = {
 exports.default = Animator;
 
 /***/ }),
-/* 24 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3916,16 +3609,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * Created by Administrator on 2016/11/26.
  */
 
-var GLCategory = function () {
-    function GLCategory(splitList) {
-        _classCallCheck(this, GLCategory);
+var Category = function () {
+    function Category(splitList) {
+        _classCallCheck(this, Category);
 
         this.splitList = splitList || {
             other: 1
         };
     }
 
-    _createClass(GLCategory, [{
+    _createClass(Category, [{
         key: 'get',
         value: function get(count) {
             var splitList = this.splitList;
@@ -3942,13 +3635,13 @@ var GLCategory = function () {
         }
     }]);
 
-    return GLCategory;
+    return Category;
 }();
 
-exports.default = GLCategory;
+exports.default = Category;
 
 /***/ }),
-/* 25 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3966,9 +3659,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * Created by Administrator on 2016/11/26.
  */
 
-var GLChoropleth = function () {
-    function GLChoropleth(splitList) {
-        _classCallCheck(this, GLChoropleth);
+var Choropleth = function () {
+    function Choropleth(splitList) {
+        _classCallCheck(this, Choropleth);
 
         this.splitList = splitList || [{
             start: 0,
@@ -3976,7 +3669,7 @@ var GLChoropleth = function () {
         }];
     }
 
-    _createClass(GLChoropleth, [{
+    _createClass(Choropleth, [{
         key: 'get',
         value: function get(count) {
             count = count.toFixed(0);
@@ -3994,13 +3687,13 @@ var GLChoropleth = function () {
         }
     }]);
 
-    return GLChoropleth;
+    return Choropleth;
 }();
 
-exports.default = GLChoropleth;
+exports.default = Choropleth;
 
 /***/ }),
-/* 26 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4041,16 +3734,16 @@ var constoptions = {
 
 };
 
-var GLCanvasArrow = function (_BaseCanvas) {
-    _inherits(GLCanvasArrow, _BaseCanvas);
+var CanvasArrow = function (_BaseCanvas) {
+    _inherits(CanvasArrow, _BaseCanvas);
 
-    function GLCanvasArrow() {
-        _classCallCheck(this, GLCanvasArrow);
+    function CanvasArrow() {
+        _classCallCheck(this, CanvasArrow);
 
-        return _possibleConstructorReturn(this, (GLCanvasArrow.__proto__ || Object.getPrototypeOf(GLCanvasArrow)).call(this));
+        return _possibleConstructorReturn(this, (CanvasArrow.__proto__ || Object.getPrototypeOf(CanvasArrow)).call(this));
     }
 
-    _createClass(GLCanvasArrow, [{
+    _createClass(CanvasArrow, [{
         key: "draw",
         value: function draw(context, dataSet, options) {
             var data = dataSet.get();
@@ -4090,13 +3783,13 @@ var GLCanvasArrow = function (_BaseCanvas) {
         }
     }]);
 
-    return GLCanvasArrow;
+    return CanvasArrow;
 }(_BaseCanvas3.default);
 
-exports.default = GLCanvasArrow;
+exports.default = CanvasArrow;
 
 /***/ }),
-/* 27 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4123,16 +3816,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 // import  ClusterUtil from "../../utils/ClusterUtil"
 
-var GLCanvasCluster = function (_BaseCanvas) {
-    _inherits(GLCanvasCluster, _BaseCanvas);
+var CanvasCluster = function (_BaseCanvas) {
+    _inherits(CanvasCluster, _BaseCanvas);
 
-    function GLCanvasCluster() {
-        _classCallCheck(this, GLCanvasCluster);
+    function CanvasCluster() {
+        _classCallCheck(this, CanvasCluster);
 
-        return _possibleConstructorReturn(this, (GLCanvasCluster.__proto__ || Object.getPrototypeOf(GLCanvasCluster)).call(this));
+        return _possibleConstructorReturn(this, (CanvasCluster.__proto__ || Object.getPrototypeOf(CanvasCluster)).call(this));
     }
 
-    _createClass(GLCanvasCluster, [{
+    _createClass(CanvasCluster, [{
         key: 'draw',
         value: function draw(context, dataSet, options) {
             var ctx = context;
@@ -4216,13 +3909,13 @@ var GLCanvasCluster = function (_BaseCanvas) {
         }
     }]);
 
-    return GLCanvasCluster;
+    return CanvasCluster;
 }(_BaseCanvas3.default);
 
-exports.default = GLCanvasCluster;
+exports.default = CanvasCluster;
 
 /***/ }),
-/* 28 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4248,16 +3941,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * Created by Administrator on 2017/2/24.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var GLCanvasEffect = function (_BaseCanvas) {
-    _inherits(GLCanvasEffect, _BaseCanvas);
+var CanvasEffect = function (_BaseCanvas) {
+    _inherits(CanvasEffect, _BaseCanvas);
 
-    function GLCanvasEffect() {
-        _classCallCheck(this, GLCanvasEffect);
+    function CanvasEffect() {
+        _classCallCheck(this, CanvasEffect);
 
-        return _possibleConstructorReturn(this, (GLCanvasEffect.__proto__ || Object.getPrototypeOf(GLCanvasEffect)).call(this));
+        return _possibleConstructorReturn(this, (CanvasEffect.__proto__ || Object.getPrototypeOf(CanvasEffect)).call(this));
     }
 
-    _createClass(GLCanvasEffect, [{
+    _createClass(CanvasEffect, [{
         key: 'draw',
         value: function draw(context, dataSet, options, renderer) {
             var data = dataSet.get();
@@ -4354,13 +4047,13 @@ var GLCanvasEffect = function (_BaseCanvas) {
         }
     }]);
 
-    return GLCanvasEffect;
+    return CanvasEffect;
 }(_BaseCanvas3.default);
 
-exports.default = GLCanvasEffect;
+exports.default = CanvasEffect;
 
 /***/ }),
-/* 29 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4372,9 +4065,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _GLIntensity = __webpack_require__(1);
+var _Intensity = __webpack_require__(1);
 
-var _GLIntensity2 = _interopRequireDefault(_GLIntensity);
+var _Intensity2 = _interopRequireDefault(_Intensity);
 
 var _BaseCanvas2 = __webpack_require__(0);
 
@@ -4390,16 +4083,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * Created by Administrator on 2016/11/26.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var GLCanvasGrid = function (_BaseCanvas) {
-    _inherits(GLCanvasGrid, _BaseCanvas);
+var CanvasGrid = function (_BaseCanvas) {
+    _inherits(CanvasGrid, _BaseCanvas);
 
-    function GLCanvasGrid() {
-        _classCallCheck(this, GLCanvasGrid);
+    function CanvasGrid() {
+        _classCallCheck(this, CanvasGrid);
 
-        return _possibleConstructorReturn(this, (GLCanvasGrid.__proto__ || Object.getPrototypeOf(GLCanvasGrid)).call(this));
+        return _possibleConstructorReturn(this, (CanvasGrid.__proto__ || Object.getPrototypeOf(CanvasGrid)).call(this));
     }
 
-    _createClass(GLCanvasGrid, [{
+    _createClass(CanvasGrid, [{
         key: "draw",
         value: function draw(context, dataSet, options) {
             context.clearRect(0, 0, context.width, context.height);
@@ -4421,7 +4114,7 @@ var GLCanvasGrid = function (_BaseCanvas) {
             }
             for (var gridKey in grids) {
                 gridKey = gridKey.split(",");
-                var intensity = new _GLIntensity2.default({
+                var intensity = new _Intensity2.default({
                     max: options.max || 100,
                     gradient: options.gradient
                 });
@@ -4449,13 +4142,13 @@ var GLCanvasGrid = function (_BaseCanvas) {
         }
     }]);
 
-    return GLCanvasGrid;
+    return CanvasGrid;
 }(_BaseCanvas3.default);
 
-exports.default = GLCanvasGrid;
+exports.default = CanvasGrid;
 
 /***/ }),
-/* 30 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4467,21 +4160,21 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _GLColorPalette = __webpack_require__(31);
+var _ColorPalette = __webpack_require__(28);
 
-var _GLColorPalette2 = _interopRequireDefault(_GLColorPalette);
+var _ColorPalette2 = _interopRequireDefault(_ColorPalette);
 
-var _GLIntensity = __webpack_require__(1);
+var _Intensity = __webpack_require__(1);
 
-var _GLIntensity2 = _interopRequireDefault(_GLIntensity);
+var _Intensity2 = _interopRequireDefault(_Intensity);
 
-var _GLSimplePath = __webpack_require__(5);
+var _SimplePath = __webpack_require__(5);
 
-var _GLSimplePath2 = _interopRequireDefault(_GLSimplePath);
+var _SimplePath2 = _interopRequireDefault(_SimplePath);
 
-var _GLCanvas = __webpack_require__(9);
+var _Canvas = __webpack_require__(9);
 
-var _GLCanvas2 = _interopRequireDefault(_GLCanvas);
+var _Canvas2 = _interopRequireDefault(_Canvas);
 
 var _BaseCanvas2 = __webpack_require__(0);
 
@@ -4497,20 +4190,20 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * Created by Administrator on 2016/11/25.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var GLCanvasHeat = function (_BaseCanvas) {
-    _inherits(GLCanvasHeat, _BaseCanvas);
+var CanvasHeat = function (_BaseCanvas) {
+    _inherits(CanvasHeat, _BaseCanvas);
 
-    function GLCanvasHeat() {
-        _classCallCheck(this, GLCanvasHeat);
+    function CanvasHeat() {
+        _classCallCheck(this, CanvasHeat);
 
-        return _possibleConstructorReturn(this, (GLCanvasHeat.__proto__ || Object.getPrototypeOf(GLCanvasHeat)).call(this));
+        return _possibleConstructorReturn(this, (CanvasHeat.__proto__ || Object.getPrototypeOf(CanvasHeat)).call(this));
     }
 
-    _createClass(GLCanvasHeat, [{
+    _createClass(CanvasHeat, [{
         key: "createCircle",
         value: function createCircle(size) {
             if (typeof document === 'undefined') {
-                var circle = new _GLCanvas2.default();
+                var circle = new _Canvas2.default();
             } else {
                 var circle = document.createElement('canvas');
             }
@@ -4563,7 +4256,7 @@ var GLCanvasHeat = function (_BaseCanvas) {
             for (var key in options) {
                 context[key] = options[key];
             }
-            var color = new _GLIntensity2.default({
+            var color = new _Intensity2.default({
                 gradient: options.gradient,
                 max: max
             });
@@ -4591,15 +4284,15 @@ var GLCanvasHeat = function (_BaseCanvas) {
                     }
                     var xy = item.xy;
                     var type = item.geometry.type;
-                    if (type === GL.GMVI.Geometry.Point) {
+                    if (type === GMVI.Geometry.Point) {
                         var count = item.count === undefined ? 1 : item.count;
                         context.globalAlpha = count / max;
                         context.drawImage(circle, xy[0] - circle.width / 2, xy[1] - circle.height / 2);
-                    } else if (type === GL.GMVI.Geometry.LineString || type === GL.GMVI.Geometry.Polyline) {
+                    } else if (type === GMVI.Geometry.LineString || type === GMVI.Geometry.Polyline) {
                         // context.globalAlpha = count / max;
                         context.globalAlpha = Math.max(item.count / max, minOpacity === undefined ? 0.05 : minOpacity);
-                        _GLSimplePath2.default.draw(context, item, options);
-                    } else if (type === GL.GMVI.Geometry.Polygon) {}
+                        _SimplePath2.default.draw(context, item, options);
+                    } else if (type === GMVI.Geometry.Polygon) {}
                 });
                 context.strokeStyle = color.getColor(i * max);
                 context.stroke();
@@ -4620,7 +4313,7 @@ var GLCanvasHeat = function (_BaseCanvas) {
 
             if (!options.absolute) {
                 var colored = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
-                this.colorize(colored.data, _GLColorPalette2.default.getImageData({
+                this.colorize(colored.data, _ColorPalette2.default.getImageData({
                     defaultGradient: options.gradient || {
                         0.25: "rgba(0, 0, 255, 1)",
                         0.55: "rgba(0, 255, 0, 1)",
@@ -4635,13 +4328,13 @@ var GLCanvasHeat = function (_BaseCanvas) {
         }
     }]);
 
-    return GLCanvasHeat;
+    return CanvasHeat;
 }(_BaseCanvas3.default);
 
-exports.default = GLCanvasHeat;
+exports.default = CanvasHeat;
 
 /***/ }),
-/* 31 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4651,31 +4344,28 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @author kyle / http://nikai.us/
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Canvas = __webpack_require__(9);
 
-var _GLCanvas = __webpack_require__(9);
-
-var _GLCanvas2 = _interopRequireDefault(_GLCanvas);
+var _Canvas2 = _interopRequireDefault(_Canvas);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var GLColorPalette = function () {
-    function GLColorPalette() {
-        _classCallCheck(this, GLColorPalette);
+var ColorPalette = function () {
+    function ColorPalette() {
+        _classCallCheck(this, ColorPalette);
     }
 
-    _createClass(GLColorPalette, [{
+    _createClass(ColorPalette, [{
         key: 'getImageData',
         value: function getImageData(config) {
             var gradientConfig = config.gradient || config.defaultGradient;
             if (typeof document === 'undefined') {
                 // var Canvas = require('canvas');
-                var paletteCanvas = new _GLCanvas2.default(256, 1);
+                var paletteCanvas = new _Canvas2.default(256, 1);
             } else {
                 var paletteCanvas = document.createElement('canvas');
             }
@@ -4696,13 +4386,13 @@ var GLColorPalette = function () {
         }
     }]);
 
-    return GLColorPalette;
+    return ColorPalette;
 }();
 
-exports.default = new GLColorPalette();
+exports.default = new ColorPalette();
 
 /***/ }),
-/* 32 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4714,9 +4404,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _GLIntensity = __webpack_require__(1);
+var _Intensity = __webpack_require__(1);
 
-var _GLIntensity2 = _interopRequireDefault(_GLIntensity);
+var _Intensity2 = _interopRequireDefault(_Intensity);
 
 var _BaseCanvas2 = __webpack_require__(0);
 
@@ -4732,16 +4422,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * Created by Administrator on 2017/1/17.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var GLCanvasHoneycomb = function (_BaseCanvas) {
-    _inherits(GLCanvasHoneycomb, _BaseCanvas);
+var CanvasHoneycomb = function (_BaseCanvas) {
+    _inherits(CanvasHoneycomb, _BaseCanvas);
 
-    function GLCanvasHoneycomb() {
-        _classCallCheck(this, GLCanvasHoneycomb);
+    function CanvasHoneycomb() {
+        _classCallCheck(this, CanvasHoneycomb);
 
-        return _possibleConstructorReturn(this, (GLCanvasHoneycomb.__proto__ || Object.getPrototypeOf(GLCanvasHoneycomb)).call(this));
+        return _possibleConstructorReturn(this, (CanvasHoneycomb.__proto__ || Object.getPrototypeOf(CanvasHoneycomb)).call(this));
     }
 
-    _createClass(GLCanvasHoneycomb, [{
+    _createClass(CanvasHoneycomb, [{
         key: "draw",
         value: function draw(context, dataSet, options) {
             context.clearRect(0, 0, context.width, context.height);
@@ -4764,7 +4454,7 @@ var GLCanvasHoneycomb = function (_BaseCanvas) {
                 var xy = data[i].xy;
                 // var coordinates = data[i].geometry._coordinates || data[i].geometry.coordinates;
                 // var latlng=[coordinates[1],coordinates[0]];
-                // var point=GL.Hub.$map.toPixel(latlng)
+                // var point=Hub.$map.toPixel(latlng)
                 var py = (xy[1] - offset.y) / dy,
                     pj = Math.round(py),
                     px = (xy[0] - offset.x) / dx - (pj & 1 ? .5 : 0),
@@ -4790,7 +4480,7 @@ var GLCanvasHoneycomb = function (_BaseCanvas) {
                     bin.y = pj * dy;
                 }
             }
-            var intensity = new _GLIntensity2.default({
+            var intensity = new _Intensity2.default({
                 max: options.max || 100,
                 maxSize: r,
                 gradient: options.gradient
@@ -4847,13 +4537,13 @@ var GLCanvasHoneycomb = function (_BaseCanvas) {
         }
     }]);
 
-    return GLCanvasHoneycomb;
+    return CanvasHoneycomb;
 }(_BaseCanvas3.default);
 
-exports.default = GLCanvasHoneycomb;
+exports.default = CanvasHoneycomb;
 
 /***/ }),
-/* 33 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4883,16 +4573,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 // import DataSet from "../../data/DataSet";
 
 
-var GLCanvasIcon = function (_BaseCanvas) {
-    _inherits(GLCanvasIcon, _BaseCanvas);
+var CanvasIcon = function (_BaseCanvas) {
+    _inherits(CanvasIcon, _BaseCanvas);
 
-    function GLCanvasIcon() {
-        _classCallCheck(this, GLCanvasIcon);
+    function CanvasIcon() {
+        _classCallCheck(this, CanvasIcon);
 
-        return _possibleConstructorReturn(this, (GLCanvasIcon.__proto__ || Object.getPrototypeOf(GLCanvasIcon)).call(this));
+        return _possibleConstructorReturn(this, (CanvasIcon.__proto__ || Object.getPrototypeOf(CanvasIcon)).call(this));
     }
 
-    _createClass(GLCanvasIcon, [{
+    _createClass(CanvasIcon, [{
         key: "draw",
         value: function draw(context, dataSet, options) {
             var data = dataSet.get();
@@ -4919,13 +4609,13 @@ var GLCanvasIcon = function (_BaseCanvas) {
         }
     }]);
 
-    return GLCanvasIcon;
+    return CanvasIcon;
 }(_BaseCanvas3.default);
 
-exports.default = GLCanvasIcon;
+exports.default = CanvasIcon;
 
 /***/ }),
-/* 34 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4941,7 +4631,7 @@ var _BaseCanvas2 = __webpack_require__(0);
 
 var _BaseCanvas3 = _interopRequireDefault(_BaseCanvas2);
 
-var _Migration = __webpack_require__(35);
+var _Migration = __webpack_require__(32);
 
 var _Migration2 = _interopRequireDefault(_Migration);
 
@@ -4966,13 +4656,13 @@ var constoptions = {
 
 };
 
-var GLCanvasMigrate = function (_BaseCanvas) {
-    _inherits(GLCanvasMigrate, _BaseCanvas);
+var CanvasMigrate = function (_BaseCanvas) {
+    _inherits(CanvasMigrate, _BaseCanvas);
 
-    function GLCanvasMigrate() {
-        _classCallCheck(this, GLCanvasMigrate);
+    function CanvasMigrate() {
+        _classCallCheck(this, CanvasMigrate);
 
-        var _this = _possibleConstructorReturn(this, (GLCanvasMigrate.__proto__ || Object.getPrototypeOf(GLCanvasMigrate)).call(this));
+        var _this = _possibleConstructorReturn(this, (CanvasMigrate.__proto__ || Object.getPrototypeOf(CanvasMigrate)).call(this));
 
         _this.options = constoptions;
         _this._style = {
@@ -4989,7 +4679,7 @@ var GLCanvasMigrate = function (_BaseCanvas) {
         return _this;
     }
 
-    _createClass(GLCanvasMigrate, [{
+    _createClass(CanvasMigrate, [{
         key: "draw",
         value: function draw(context, dataSet, options, renderer) {
             var data = dataSet.get();
@@ -5032,13 +4722,13 @@ var GLCanvasMigrate = function (_BaseCanvas) {
         }
     }]);
 
-    return GLCanvasMigrate;
+    return CanvasMigrate;
 }(_BaseCanvas3.default);
 
-exports.default = GLCanvasMigrate;
+exports.default = CanvasMigrate;
 
 /***/ }),
-/* 35 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5217,7 +4907,7 @@ var Migration = function () {
 exports.default = Migration;
 
 /***/ }),
-/* 36 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5233,7 +4923,7 @@ var _BaseCanvas2 = __webpack_require__(0);
 
 var _BaseCanvas3 = _interopRequireDefault(_BaseCanvas2);
 
-var _MigrationLine = __webpack_require__(37);
+var _MigrationLine = __webpack_require__(34);
 
 var _MigrationLine2 = _interopRequireDefault(_MigrationLine);
 
@@ -5258,13 +4948,13 @@ var constoptions = {
 
 };
 
-var GLCanvasMigrateLines = function (_BaseCanvas) {
-    _inherits(GLCanvasMigrateLines, _BaseCanvas);
+var CanvasMigrateLines = function (_BaseCanvas) {
+    _inherits(CanvasMigrateLines, _BaseCanvas);
 
-    function GLCanvasMigrateLines() {
-        _classCallCheck(this, GLCanvasMigrateLines);
+    function CanvasMigrateLines() {
+        _classCallCheck(this, CanvasMigrateLines);
 
-        var _this = _possibleConstructorReturn(this, (GLCanvasMigrateLines.__proto__ || Object.getPrototypeOf(GLCanvasMigrateLines)).call(this));
+        var _this = _possibleConstructorReturn(this, (CanvasMigrateLines.__proto__ || Object.getPrototypeOf(CanvasMigrateLines)).call(this));
 
         _this.options = constoptions;
         _this._style = {
@@ -5281,7 +4971,7 @@ var GLCanvasMigrateLines = function (_BaseCanvas) {
         return _this;
     }
 
-    _createClass(GLCanvasMigrateLines, [{
+    _createClass(CanvasMigrateLines, [{
         key: "draw",
         value: function draw(context, dataSet, options, renderer) {
             var data = dataSet.get();
@@ -5326,13 +5016,13 @@ var GLCanvasMigrateLines = function (_BaseCanvas) {
         }
     }]);
 
-    return GLCanvasMigrateLines;
+    return CanvasMigrateLines;
 }(_BaseCanvas3.default);
 
-exports.default = GLCanvasMigrateLines;
+exports.default = CanvasMigrateLines;
 
 /***/ }),
-/* 37 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5482,7 +5172,7 @@ var MigrationLine = function () {
 exports.default = MigrationLine;
 
 /***/ }),
-/* 38 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5519,16 +5209,16 @@ var constoptions = {
 
 };
 
-var GLCanvasScatter = function (_BaseCanvas) {
-    _inherits(GLCanvasScatter, _BaseCanvas);
+var CanvasScatter = function (_BaseCanvas) {
+    _inherits(CanvasScatter, _BaseCanvas);
 
-    function GLCanvasScatter() {
-        _classCallCheck(this, GLCanvasScatter);
+    function CanvasScatter() {
+        _classCallCheck(this, CanvasScatter);
 
-        return _possibleConstructorReturn(this, (GLCanvasScatter.__proto__ || Object.getPrototypeOf(GLCanvasScatter)).call(this));
+        return _possibleConstructorReturn(this, (CanvasScatter.__proto__ || Object.getPrototypeOf(CanvasScatter)).call(this));
     }
 
-    _createClass(GLCanvasScatter, [{
+    _createClass(CanvasScatter, [{
         key: "draw",
         value: function draw(context, dataSet, options, renderer) {
             var data = dataSet.get();
@@ -5581,13 +5271,13 @@ var GLCanvasScatter = function (_BaseCanvas) {
         }
     }]);
 
-    return GLCanvasScatter;
+    return CanvasScatter;
 }(_BaseCanvas3.default);
 
-exports.default = GLCanvasScatter;
+exports.default = CanvasScatter;
 
 /***/ }),
-/* 39 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5599,9 +5289,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _GLSimplePath = __webpack_require__(5);
+var _SimplePath = __webpack_require__(5);
 
-var _GLSimplePath2 = _interopRequireDefault(_GLSimplePath);
+var _SimplePath2 = _interopRequireDefault(_SimplePath);
 
 var _BaseCanvas2 = __webpack_require__(0);
 
@@ -5613,22 +5303,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @author kyle / http://nikai.us/
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 // import DataSet from "../../data/DataSet";
 
-var GLCanvasSimple = function (_BaseCanvas) {
-    _inherits(GLCanvasSimple, _BaseCanvas);
+var CanvasSimple = function (_BaseCanvas) {
+    _inherits(CanvasSimple, _BaseCanvas);
 
-    function GLCanvasSimple() {
-        _classCallCheck(this, GLCanvasSimple);
+    function CanvasSimple() {
+        _classCallCheck(this, CanvasSimple);
 
-        return _possibleConstructorReturn(this, (GLCanvasSimple.__proto__ || Object.getPrototypeOf(GLCanvasSimple)).call(this));
+        return _possibleConstructorReturn(this, (CanvasSimple.__proto__ || Object.getPrototypeOf(CanvasSimple)).call(this));
     }
 
-    _createClass(GLCanvasSimple, [{
+    _createClass(CanvasSimple, [{
         key: "draw",
         value: function draw(context, dataSet, options) {
             var data = dataSet.get();
@@ -5653,13 +5341,13 @@ var GLCanvasSimple = function (_BaseCanvas) {
                     }
                     var type = item.geometry.type;
                     context.beginPath();
-                    _GLSimplePath2.default.draw(context, item, options);
-                    if (type == GL.GMVI.Geometry.Point || type == GL.GMVI.Geometry.Polygon || type == GL.GMVI.Geometry.MultiPolygon || type == GL.GMVI.Geometry.Circle) {
+                    _SimplePath2.default.draw(context, item, options);
+                    if (type == GMVI.Geometry.Point || type == GMVI.Geometry.Polygon || type == GMVI.Geometry.MultiPolygon || type == GMVI.Geometry.Circle) {
                         context.fill();
                         if (item.strokeStyle || options.strokeStyle) {
                             if (!options.stroke || options.stroke == true) context.stroke();
                         }
-                    } else if (type == GL.GMVI.Geometry.LineString || type == GL.GMVI.Geometry.Polyline) {
+                    } else if (type == GMVI.Geometry.LineString || type == GMVI.Geometry.Polyline) {
                         context.stroke();
                     }
                     context.restore();
@@ -5670,13 +5358,13 @@ var GLCanvasSimple = function (_BaseCanvas) {
         }
     }]);
 
-    return GLCanvasSimple;
+    return CanvasSimple;
 }(_BaseCanvas3.default);
 
-exports.default = GLCanvasSimple;
+exports.default = CanvasSimple;
 
 /***/ }),
-/* 40 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5700,16 +5388,16 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var GLCanvasStar = function (_BaseCanvas) {
-    _inherits(GLCanvasStar, _BaseCanvas);
+var CanvasStar = function (_BaseCanvas) {
+    _inherits(CanvasStar, _BaseCanvas);
 
-    function GLCanvasStar() {
-        _classCallCheck(this, GLCanvasStar);
+    function CanvasStar() {
+        _classCallCheck(this, CanvasStar);
 
-        return _possibleConstructorReturn(this, (GLCanvasStar.__proto__ || Object.getPrototypeOf(GLCanvasStar)).call(this));
+        return _possibleConstructorReturn(this, (CanvasStar.__proto__ || Object.getPrototypeOf(CanvasStar)).call(this));
     }
 
-    _createClass(GLCanvasStar, [{
+    _createClass(CanvasStar, [{
         key: "draw",
         value: function draw(context, dataSet, options) {
             var data = dataSet.get();
@@ -5790,13 +5478,13 @@ var GLCanvasStar = function (_BaseCanvas) {
         }
     }]);
 
-    return GLCanvasStar;
+    return CanvasStar;
 }(_BaseCanvas3.default);
 
-exports.default = GLCanvasStar;
+exports.default = CanvasStar;
 
 /***/ }),
-/* 41 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5822,16 +5510,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * Created by Administrator on 2017/6/13.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-var GLCanvasTagCloud = function (_BaseCanvas) {
-    _inherits(GLCanvasTagCloud, _BaseCanvas);
+var CanvasTagCloud = function (_BaseCanvas) {
+    _inherits(CanvasTagCloud, _BaseCanvas);
 
-    function GLCanvasTagCloud() {
-        _classCallCheck(this, GLCanvasTagCloud);
+    function CanvasTagCloud() {
+        _classCallCheck(this, CanvasTagCloud);
 
-        return _possibleConstructorReturn(this, (GLCanvasTagCloud.__proto__ || Object.getPrototypeOf(GLCanvasTagCloud)).call(this));
+        return _possibleConstructorReturn(this, (CanvasTagCloud.__proto__ || Object.getPrototypeOf(CanvasTagCloud)).call(this));
     }
 
-    _createClass(GLCanvasTagCloud, [{
+    _createClass(CanvasTagCloud, [{
         key: "draw",
         value: function draw(context, dataSet, options) {
             var data = dataSet.get();
@@ -5908,13 +5596,13 @@ var GLCanvasTagCloud = function (_BaseCanvas) {
         }
     }]);
 
-    return GLCanvasTagCloud;
+    return CanvasTagCloud;
 }(_BaseCanvas3.default);
 
-exports.default = GLCanvasTagCloud;
+exports.default = CanvasTagCloud;
 
 /***/ }),
-/* 42 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5943,16 +5631,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 // import pathSimple from "../path/GLSimplePath";
 
 
-var GLCanvasText = function (_BaseCanvas) {
-    _inherits(GLCanvasText, _BaseCanvas);
+var CanvasText = function (_BaseCanvas) {
+    _inherits(CanvasText, _BaseCanvas);
 
-    function GLCanvasText() {
-        _classCallCheck(this, GLCanvasText);
+    function CanvasText() {
+        _classCallCheck(this, CanvasText);
 
-        return _possibleConstructorReturn(this, (GLCanvasText.__proto__ || Object.getPrototypeOf(GLCanvasText)).call(this));
+        return _possibleConstructorReturn(this, (CanvasText.__proto__ || Object.getPrototypeOf(CanvasText)).call(this));
     }
 
-    _createClass(GLCanvasText, [{
+    _createClass(CanvasText, [{
         key: 'draw',
         value: function draw(context, dataSet, options) {
             var data = dataSet.get();
@@ -5992,13 +5680,13 @@ var GLCanvasText = function (_BaseCanvas) {
         }
     }]);
 
-    return GLCanvasText;
+    return CanvasText;
 }(_BaseCanvas3.default);
 
-exports.default = GLCanvasText;
+exports.default = CanvasText;
 
 /***/ }),
-/* 43 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6189,16 +5877,16 @@ Waterbubble.prototype = {
     }
 };
 
-var GLCanvasWaterBubble = function (_BaseCanvas) {
-    _inherits(GLCanvasWaterBubble, _BaseCanvas);
+var CanvasWaterBubble = function (_BaseCanvas) {
+    _inherits(CanvasWaterBubble, _BaseCanvas);
 
-    function GLCanvasWaterBubble() {
-        _classCallCheck(this, GLCanvasWaterBubble);
+    function CanvasWaterBubble() {
+        _classCallCheck(this, CanvasWaterBubble);
 
-        return _possibleConstructorReturn(this, (GLCanvasWaterBubble.__proto__ || Object.getPrototypeOf(GLCanvasWaterBubble)).call(this));
+        return _possibleConstructorReturn(this, (CanvasWaterBubble.__proto__ || Object.getPrototypeOf(CanvasWaterBubble)).call(this));
     }
 
-    _createClass(GLCanvasWaterBubble, [{
+    _createClass(CanvasWaterBubble, [{
         key: 'draw',
         value: function draw(context, dataSet, options) {
             var data = dataSet.get();
@@ -6220,13 +5908,13 @@ var GLCanvasWaterBubble = function (_BaseCanvas) {
         }
     }]);
 
-    return GLCanvasWaterBubble;
+    return CanvasWaterBubble;
 }(_BaseCanvas3.default);
 
-exports.default = GLCanvasWaterBubble;
+exports.default = CanvasWaterBubble;
 
 /***/ }),
-/* 44 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6254,16 +5942,16 @@ var n = 40;
 var defaultColor = 'red';
 var defaultSize = 30;
 
-var GLCanvasRadial = function (_BaseCanvas) {
-    _inherits(GLCanvasRadial, _BaseCanvas);
+var CanvasRadial = function (_BaseCanvas) {
+    _inherits(CanvasRadial, _BaseCanvas);
 
-    function GLCanvasRadial() {
-        _classCallCheck(this, GLCanvasRadial);
+    function CanvasRadial() {
+        _classCallCheck(this, CanvasRadial);
 
-        return _possibleConstructorReturn(this, (GLCanvasRadial.__proto__ || Object.getPrototypeOf(GLCanvasRadial)).call(this));
+        return _possibleConstructorReturn(this, (CanvasRadial.__proto__ || Object.getPrototypeOf(CanvasRadial)).call(this));
     }
 
-    _createClass(GLCanvasRadial, [{
+    _createClass(CanvasRadial, [{
         key: "draw",
         value: function draw(context, dataSet, options) {
             var data = dataSet.get();
@@ -6301,13 +5989,13 @@ var GLCanvasRadial = function (_BaseCanvas) {
         }
     }]);
 
-    return GLCanvasRadial;
+    return CanvasRadial;
 }(_BaseCanvas3.default);
 
-exports.default = GLCanvasRadial;
+exports.default = CanvasRadial;
 
 /***/ }),
-/* 45 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6351,10 +6039,10 @@ var Circle = function (_maptalks$Circle) {
 module.exports = Circle;
 
 /***/ }),
-/* 46 */
+/* 43 */
 /***/ (function(module, exports) {
 
-module.exports = {"id":"maptalks-gmvi","version":"0.1.1","date":"2018.6.25","skin":"default"}
+module.exports = {"id":"maptalks-gmvi","version":"0.1.2","date":"2018.8.26","skin":"default"}
 
 /***/ })
 /******/ ]);
